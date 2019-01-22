@@ -9,7 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import CardContent from "@material-ui/core/CardContent";
-// Buttons and clickables
+// Buttons and clickable components
 import Fab from "@material-ui/core/Fab";
 import IconButton from "@material-ui/core/IconButton";
 import Avatar from "@material-ui/core/Avatar";
@@ -29,9 +29,7 @@ import blue from "@material-ui/core/colors/blue";
 import fetch from "node-fetch";
 import fileSystem from "fs";
 import path from "path";
-
-
-
+// Global variables
 const snet_blue = "#1F8CFB";
 
 const styles = theme => ({
@@ -107,7 +105,9 @@ function validUrl (url) {
 }
 
 function base64ToNode (buffer) {
-    return buffer.toString("base64");
+    const base64return = buffer.toString("base64");
+    console.log(base64return);
+    return base64return;
 }
 
 function validTypeImage (image) {
@@ -128,27 +128,31 @@ function isImage (urlOrImage) {
         return Promise.reject("[*] Occurent some error... [validTypeImage] == false");
     }
 }
-/*,  {
-            method: "GET", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, cors, *same-origin
-            cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: "same-origin", // include, *same-origin, omit
-            headers: {
-                "Content-Type": "application/json",
-                // "Content-Type": "application/x-www-form-urlencoded",
-            },
-            redirect: "follow", // manual, *follow, error
-            referrer: "no-referrer", // no-referrer, *client
-        }*/
+
 function imageToBase64 (urlOrImage) {
     if (validUrl(urlOrImage)) {
-        return fetch("https://cors-anywhere.herokuapp.com/" + urlOrImage).then(function(response){
+        console.log("Valid URL!");
+        return fetch(urlOrImage).then(function(response){
             return response.buffer()
         }).then(base64ToNode);
     } else {
+        console.log("Invalid URL!");
         return isImage(urlOrImage);
     }
 }
+
+/*, {
+            method: "GET", // *GET, POST, PUT, DELETE, etc.
+            mode: "no-cors", // no-cors, cors, *same-origin
+            //cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            //credentials: "same-origin", // include, *same-origin, omit
+            //headers: {
+            //    "Content-Type": "application/json",
+            //    // "Content-Type": "application/x-www-form-urlencoded",
+            //},
+            //redirect: "follow", // manual, *follow, error
+            //referrer: "no-referrer", // no-referrer, *client
+        }*/
 
 function toDataUrl(src, callback, outputFormat) {
     const img = new Image();
@@ -267,7 +271,6 @@ class ImageUploadCard extends React.Component {
     }
 
     handleSearchSubmit = () => {
-        const proxyURL = 'https://cors-anywhere.herokuapp.com/';
         const file = this.state.searchText;
 
         const base64img = imageToBase64(file);
