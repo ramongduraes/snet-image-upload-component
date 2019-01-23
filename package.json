@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "latest",
+    "@material-ui/icons": "latest",
+    "material-ui-dropzone": "^2.2.1",
+    "prop-types": "latest",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-scripts": "2.1.3",
-    "@material-ui/core": "latest",
-    "@material-ui/icons": "latest",
-    "base64-img": "latest",
-    "node-fetch": "latest"
+    "react-swipeable-views": "^0.13.1"
   },
   "scripts": {
     "start": "PORT=7052 HOST='0.0.0.0' react-scripts start",

@@ -1,7 +1,8 @@
 // imports the React Javascript Library
 import React from "react";
 // Export with styles
-import { withStyles } from "@material-ui/core/styles";
+import {withStyles} from "@material-ui/core/styles";
+import {MuiThemeProvider} from '@material-ui/core/styles'
 // Structural
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
@@ -23,22 +24,41 @@ import Divider from "@material-ui/core/Divider";
 import CloseIcon from "@material-ui/icons/Close";
 import ReplayIcon from "@material-ui/icons/Replay";
 import ErrorOutlinedIcon from "@material-ui/icons/ErrorOutlined";
+// Loading
+import CircularProgress from '@material-ui/core/CircularProgress';
+// Transitions
+import Fade from '@material-ui/core/Fade';
+import Grow from '@material-ui/core/Grow';
+// Tooltips
+import Tooltip from '@material-ui/core/Tooltip';
 // Colors
 import blue from "@material-ui/core/colors/blue";
-// Base64
-import fetch from "node-fetch";
-import fileSystem from "fs";
-import path from "path";
+import lightBlue from '@material-ui/core/colors/lightBlue';
+
+// For tab views
+import PropTypes from 'prop-types';
+import {DropzoneArea} from 'material-ui-dropzone'
+import SwipeableViews from 'react-swipeable-views';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+import GridList from "@material-ui/core/GridList";
+import GridListTile from "@material-ui/core/GridListTile";
+import GridListTileBar from '@material-ui/core/GridListTileBar';
+
 // Global variables
 const snet_blue = "#1F8CFB";
 
 const styles = theme => ({
-    root: {
-        backgroundColor: theme.palette.background.paper,
-        width: 500,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "flex-end"
+    // TODO: relative size!
+    palette: {
+        primary: {main: lightBlue[500]}, // Purple and green play nicely together.
+        secondary: {main: '#1F8CFB'}, // This is just green.A700 as hex.
+    },
+    mainCard: {
+        width: 300,
+        height: 300,
     },
     icon: {
         margin: theme.spacing.unit * 2
@@ -67,6 +87,10 @@ const styles = theme => ({
         color: snet_blue,
         margin: 10
     },
+    avatar: {
+        width: 60,
+        height: 60,
+    },
     secondaryButton: {
         color: "gray",
         margin: 10
@@ -83,7 +107,8 @@ const styles = theme => ({
         padding: "2px 4px",
         display: "flex",
         alignItems: "center",
-        width: 400
+        width: "90%",
+        height: "90%",
     },
     searchInput: {
         marginLeft: 8,
@@ -96,68 +121,35 @@ const styles = theme => ({
         width: 1,
         height: 28,
         margin: 4
-    }
+    },
+    image: { //TODO: check if this doesnt make me convert only 25% of the image to base64
+        width: "75%",
+        height: "75%",
+    },
+    gridList: {
+        flexWrap: 'nowrap',
+        // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
+        transform: 'translateZ(0)',
+    },
 });
 
-
-function validUrl (url) {
-    return /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/gi.test(url);
+function TabContainer({children, dir}) {
+    return (
+        <Typography component="div" dir={dir} style={{padding: 8 * 3}}>
+            {children}
+        </Typography>
+    );
 }
 
-function base64ToNode (buffer) {
-    const base64return = buffer.toString("base64");
-    console.log(base64return);
-    return base64return;
-}
-
-function validTypeImage (image) {
-    return /(\.(jpg)|\.(png)|\.(jpeg))/gi.test(image);
-}
-
-function readFileAndConvert (fileName) {
-    if (fileSystem.statSync(fileName).isFile()) {
-        return base64ToNode(fileSystem.readFileSync(path.resolve(fileName)).toString("base64"));
-    }
-    return null;
-}
-
-function isImage (urlOrImage) {
-    if (validTypeImage(urlOrImage)) {
-        return Promise.resolve(readFileAndConvert(urlOrImage));
-    } else {
-        return Promise.reject("[*] Occurent some error... [validTypeImage] == false");
-    }
-}
-
-function imageToBase64 (urlOrImage) {
-    if (validUrl(urlOrImage)) {
-        console.log("Valid URL!");
-        return fetch(urlOrImage).then(function(response){
-            return response.buffer()
-        }).then(base64ToNode);
-    } else {
-        console.log("Invalid URL!");
-        return isImage(urlOrImage);
-    }
-}
-
-/*, {
-            method: "GET", // *GET, POST, PUT, DELETE, etc.
-            mode: "no-cors", // no-cors, cors, *same-origin
-            //cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            //credentials: "same-origin", // include, *same-origin, omit
-            //headers: {
-            //    "Content-Type": "application/json",
-            //    // "Content-Type": "application/x-www-form-urlencoded",
-            //},
-            //redirect: "follow", // manual, *follow, error
-            //referrer: "no-referrer", // no-referrer, *client
-        }*/
+TabContainer.propTypes = {
+    children: PropTypes.node.isRequired,
+    dir: PropTypes.string.isRequired,
+};
 
 function toDataUrl(src, callback, outputFormat) {
     const img = new Image();
     img.crossOrigin = 'anonymous';
-    img.onload = function() {
+    img.onload = function () {
         const canvas = document.createElement('CANVAS');
         const ctx = canvas.getContext('2d');
         let dataURL;
@@ -174,6 +166,7 @@ function toDataUrl(src, callback, outputFormat) {
     }
 }
 
+// TODO : handle upload error
 class ImageUploadCard extends React.Component {
 
     constructor(props) {
@@ -182,26 +175,106 @@ class ImageUploadCard extends React.Component {
         // Component is lower in the tree, and now button has the logic how to open the screen.
 
         this.state = {
-            mainState: "initial", // initial, search, gallery, uploaded, error
-            imageUploaded: 0,
-            selectedFile: null,
+            value: 0, // Current tab value
+            mainState: "initial", // initial, search, gallery, loading, uploaded, error
+            imageUploaded: false,
+            loading: false,
             searchText: null,
+            selectedFile: null,
+            filename: null,
+            primaryColor: lightBlue[500],
         };
 
         this.urlCallback = this.urlCallback.bind(this);
     }
 
+    loadImage = () => {
+        //Loading and appending external resource
+        let img = document.createElement('img');
+        img.id = "loadedImage";
+        img.crossOrigin = "Anonymous";
+        img.src = "https://upload.wikimedia.org/wikipedia/commons/d/dd/Big_%26_Small_Pumkins.JPG";
+        // img.src = "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80";
+        let element = document.getElementById('loaded_container').appendChild(img);
+        console.log(element);
+    };
+
+    addImageCanvas = () => {
+        let image = document.getElementById('loadedImage');
+        let imgCanvas = document.createElement("canvas"),
+            imgContext = imgCanvas.getContext("2d");
+        imgCanvas.width = image.width;
+        imgCanvas.height = image.height;
+        imgContext.drawImage(image, 0, 0, image.width, image.height);
+        document.getElementById('converted_container').appendChild(imgCanvas);
+    };
+
+    convertImage = () => {
+        let image = document.getElementById('loadedImage');
+        let imgCanvas = document.createElement("canvas"),
+            imgContext = imgCanvas.getContext("2d");
+        imgCanvas.width = image.width;
+        imgCanvas.height = image.height;
+        imgContext.drawImage(image, 0, 0, image.width, image.height);
+        let selectedFile = imgCanvas.toDataURL("image/png");
+
+        // Appending converted image
+        let img = document.createElement('img');
+        img.id = "convertedImage";
+        img.src = selectedFile;
+        document.getElementById('converted_container').appendChild(img);
+        console.log(selectedFile);
+
+    };
+
+    handleDropzoneUpload(files) {
+        this.setLoadingState();
+
+        const file = files[0];
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+
+        reader.onloadend = function () {
+            this.setState({
+                mainState: "uploaded", // initial, search, gallery, loading, uploaded, error
+                imageUploaded: true,
+                searchText: null,
+                selectedFile: [reader.result], //TODO: get image base64
+                filename: null, //TODO: Get filename
+            });
+            console.log(this.state.selectedFile[0]);
+        }.bind(this);
+    }
+
+    renderUploadState() {
+        return (
+            <DropzoneArea
+                filesLimit={1}
+                acceptedFiles={["image/jpg", "image/png", "image/bmp"]}
+                onChange={this.handleDropzoneUpload.bind(this)}
+            />
+        );
+    }
+
+    setLoadingState() {
+        this.setState({
+            mainState: "loading",
+        })
+    };
+
     handleUploadClick = event => {
+        this.setLoadingState();
 
         const file = event.target.files[0];
         const reader = new FileReader();
         reader.readAsDataURL(file);
 
-        reader.onloadend = function() {
+        reader.onloadend = function () {
             this.setState({
-                selectedFile: [reader.result],
-                mainState: "uploaded",
-                imageUploaded: 1,
+                mainState: "uploaded", // initial, search, gallery, loading, uploaded, error
+                searchText: null,
+                selectedFile: [reader.result], //TODO: get image base64
+                filename: null, //TODO: Get filename
             });
             console.log(this.state.selectedFile[0]);
         }.bind(this);
@@ -210,43 +283,68 @@ class ImageUploadCard extends React.Component {
 
     handleSearchClick = () => {
         this.setState({
-            mainState: "search"
+            mainState: "search", // initial, search, gallery, loading, uploaded, error
+            searchText: null,
+            selectedFile: null,
+            filename: null,
         });
     };
 
     handleGalleryClick = () => {
         this.setState({
-            mainState: "gallery"
+            mainState: "gallery", // initial, search, gallery, loading, uploaded, error
+            searchText: null,
+            selectedFile: null,
+            filename: null,
         });
     };
 
     renderInitialState() {
-        const { classes } = this.props;
+        const {classes} = this.props;
 
         return (
-            <CardContent>
-                <Grid container justify="center" alignItems="center">
-                    <input
-                        accept="image/*"
-                        className={classes.input}
-                        id="contained-button-file"
-                        multiple
-                        type="file"
-                        onChange={this.handleUploadClick}
-                    />
-                    <label htmlFor="contained-button-file">
-                        <Fab component="span" className={classes.button}>
-                            <AddPhotoAlternateIcon />
-                        </Fab>
-                    </label>
-                    <Fab className={classes.button} onClick={this.handleSearchClick}>
-                        <SearchIcon />
-                    </Fab>
-                    <Fab className={classes.button} onClick={this.handleGalleryClick}>
-                        <CollectionsIcon />
-                    </Fab>
-                </Grid>
-            </CardContent>
+            <Fade in={this.state.mainState === "initial"}>
+                <CardContent>
+                    <Grid container direction="col" justify="center" alignItems="center">
+                        <Grid item>
+                            <input
+                                accept="image/*"
+                                className={classes.input}
+                                id="contained-button-file"
+                                multiple
+                                type="file"
+                                onChange={this.handleUploadClick}
+                            />
+                            <label htmlFor="contained-button-file">
+                                <Tooltip disableFocusListener disableTouchListener title="Upload" enterDelay={500}>
+                                    <Fab component="span" className={classes.button}>
+                                        <AddPhotoAlternateIcon/>
+                                    </Fab>
+                                </Tooltip>
+                            </label>
+                        </Grid>
+                        <Grid item>
+                            <Tooltip disableFocusListener disableTouchListener title="From URL" enterDelay={500}>
+                                <Fab className={classes.button} onClick={this.handleSearchClick}>
+                                    <SearchIcon/>
+                                </Fab>
+                            </Tooltip>
+                        </Grid>
+
+                        {   //TODO: assert image gallery types (list of urls)
+                            this.props.imageGallery.length > 0 &&
+                            <Grid item>
+                                <Tooltip disableFocusListener disableTouchListener title="Example Gallery"
+                                         enterDelay={500}>
+                                    <Fab className={classes.button} onClick={this.handleGalleryClick}>
+                                        <CollectionsIcon/>
+                                    </Fab>
+                                </Tooltip>
+                            </Grid>
+                        }
+                    </Grid>
+                </CardContent>
+            </Fade>
         );
     }
 
@@ -254,28 +352,29 @@ class ImageUploadCard extends React.Component {
         this.setState({
             searchText: event.target.value,
         });
-
-        console.log(event.target.value);
     };
 
 
-    urlCallback(data){
+    urlCallback(data) {
         console.log(data);
         this.setState({
             selectedFile: data,
             mainState: "uploaded",
-            imageUploaded: 1,
+            imageUploaded: true,
             //filename: filename,
             searchText: null,
         });
     }
 
+    // TODO: Render data not URL
+    // TODO: Cannot read substring of null (when clicking search with an empty field
     handleSearchSubmit = () => {
-        const file = this.state.searchText;
+        this.setState({
+            mainState: "loading",
+            loading: true,
+        });
 
-        const base64img = imageToBase64(file);
-
-        console.log(base64img);
+        //const file = this.state.searchText;
         //toDataUrl(proxyURL + file, this.urlCallback);
         //const filename = file.substring(file.lastIndexOf("/") + 1);
         //console.log(filename);
@@ -283,7 +382,6 @@ class ImageUploadCard extends React.Component {
         /*this.setState({
             selectedFile: this.state.searchText,
             mainState: "uploaded",
-            imageUploaded: 1,
             //filename: filename,
             searchText: null,
         });*/
@@ -292,112 +390,131 @@ class ImageUploadCard extends React.Component {
 
     handleSearchClose = () => {
         this.setState({
-            mainState: "initial",
+            mainState: "initial", // initial, search, gallery, loading, uploaded, error
             searchText: null,
+            selectedFile: null,
             filename: null,
         });
     };
 
+    // TODO: deal with non-image URLs and strings
     renderSearchState() {
-        const { classes } = this.props;
+        const {classes} = this.props;
 
         return (
             <Paper className={classes.searchRoot} elevation={1}>
-                <InputBase className={classes.searchInput} placeholder="Image URL" onChange={this.searchTextUpdate}/>
-                <IconButton
-                    className={classes.button}
-                    aria-label="Search"
-                    onClick={this.handleSearchSubmit}
-                >
-                    <SearchIcon />
-                </IconButton>
-                <Divider className={classes.searchDivider} />
-                <IconButton
-                    color="primary"
-                    className={classes.secondaryButton}
-                    aria-label="Close"
-                    onClick={this.handleSearchClose}
-                >
-                    <CloseIcon />
-                </IconButton>
+                <InputBase className={classes.searchInput} placeholder="Image URL"
+                           onChange={this.searchTextUpdate}/>
+                <Tooltip disableFocusListener disableTouchListener title="Submit" enterDelay={1000}>
+                    <IconButton
+                        className={classes.button}
+                        aria-label="Search"
+                        onClick={this.handleSearchSubmit}
+                    >
+                        <SearchIcon/>
+                    </IconButton>
+                </Tooltip>
+                <Divider className={classes.searchDivider}/>
+                <Tooltip disableFocusListener disableTouchListener title="Cancel search" enterDelay={1000}>
+                    <IconButton
+                        color="primary"
+                        className={classes.secondaryButton}
+                        aria-label="Close"
+                        onClick={this.handleSearchClose}
+                    >
+                        <CloseIcon/>
+                    </IconButton>
+                </Tooltip>
             </Paper>
         );
     }
 
-    handleAvatarClick(value) {
+    handleGalleryImageClick(image){
+        this.setLoadingState();
+
         const proxyURL = 'https://cors-anywhere.herokuapp.com/';
-        const file = value.url;
-        const filename = value.url.substring(value.url.lastIndexOf("/") + 1);
+        const file = image.url;
+        const filename = image.url.substring(image.url.lastIndexOf("/") + 1);
         console.log(filename);
         toDataUrl(proxyURL + file, this.urlCallback);
 
 
         /*this.setState({
             mainState: "uploaded",
-            imageUploaded: true,
             selectedFile: value.url,
             fileReader: undefined,
             filename: filename
         });*/
     }
 
+    // TODO: loading taking too long bug
     renderGalleryState() {
-        const { classes } = this.props;
-        const listItems = this.props.imageGallery.map((url,i) => (
-            <div
-                key={i}
-                onClick={() => this.handleAvatarClick({ url })}
-                style={{
-                    padding: "5px 5px 5px 5px",
-                    cursor: "pointer"
-                }}
-            >
-                <Avatar src={url} />
-            </div>
-        ));
+        const {classes} = this.props;
 
         return (
-            <Grid>
-                {listItems}
-                <IconButton
-                    color="primary"
-                    className={classes.secondaryButton}
-                    aria-label="Close"
-                    onClick={this.handleSearchClose}
-                >
-                    <ReplayIcon />
-                </IconButton>
-            </Grid>
+            <GridList className={classes.gridList} cols={3.3}>
+                {this.props.imageGallery.map((url,i)  => (
+                    <GridListTile key={i}>
+                        <img
+                            src={url}
+                            alt={"Gallery Image " + i}
+                            onClick={() => this.handleGalleryImageClick({url})}
+                        />
+                    </GridListTile>
+                ))}
+            </GridList>
         );
     }
 
     handleImageReset = () => {
         console.log("Click!");
         this.setState({
-            mainState: "initial",
+            mainState: "initial", // initial, search, gallery, loading, uploaded, error
+            imageUploaded: false,
+            searchText: null,
             selectedFile: null,
-            imageUploaded: 0,
             filename: null,
         });
     };
 
+    // TODO: implement loading state
+    renderLoadingState() {
+        const {classes} = this.props;
+
+        return (
+            <Fade
+                in={this.state.mainState === "loading"}
+                style={{
+                    transitionDelay: this.state.loading ? '800ms' : '0ms',
+                }}
+                unmountOnExit
+            >
+                <CircularProgress className={classes.button}/>
+            </Fade>
+        );
+    };
+
+    // TODO: add filename, reset icon and reset tooltip
     renderUploadedState() {
-        const { classes } = this.props;
+        const {classes} = this.props;
 
         return (
             <CardActionArea onClick={this.handleImageReset}>
-                <img
-                    alt="Uploaded file or url"
-                    width="100%"
-                    className={classes.media}
-                    src={this.state.selectedFile}
-                    onError={this.handleError}
-                    crossOrigin="anonymous"
-                />
+                <Fade in={this.state.mainState === "uploaded"}>
+                    <img
+                        alt="Chosen input"
+                        width="100%"
+                        className={classes.image}
+                        src={this.state.selectedFile}
+                        onError={this.handleError}
+                        crossOrigin="anonymous"
+                    />
+                </Fade>
             </CardActionArea>
         );
     }
 
+    // TODO: specify error message, reset to initial state.
     handleError() {
         this.setState({
             mainState: "error",
@@ -405,7 +522,7 @@ class ImageUploadCard extends React.Component {
     }
 
     renderErrorState() {
-        const { classes } = this.props;
+        const {classes} = this.props;
 
         return (
             <CardActionArea onClick={this.handleImageReset}>
@@ -415,27 +532,135 @@ class ImageUploadCard extends React.Component {
                     aria-label="Close"
                     onClick={this.handleSearchClose}
                 >
-                    <ErrorOutlinedIcon />
+                    <ErrorOutlinedIcon/>
                 </IconButton>
             </CardActionArea>
         );
     }
 
+    // TODO: set component size, relative sizes
+    // TODO: return binary / base64 data
+    // TODO: if no list, no gallery
+
+    handleTabChange = (event, value) => {
+        var mainState = null;
+        switch (value) {
+            case 0:
+                mainState = "upload";
+                break;
+            case 1:
+                mainState = "search";
+                break;
+            case 2:
+                mainState = "gallery";
+                break;
+            default:
+                mainState = "upload";
+        }
+
+        this.setState({
+            value: value,
+            mainState: mainState,
+            selectedFile: null,
+            imageUploaded: false,
+            filename: null,
+        });
+    };
+
+    handleTabChangeIndex = index => {
+
+        var mainState = null;
+        switch (index) {
+            case 0:
+                mainState = "upload";
+                break;
+            case 1:
+                mainState = "search";
+                break;
+            case 2:
+                mainState = "gallery";
+                break;
+            default:
+                mainState = "upload";
+        }
+
+        this.setState({
+            value: index,
+            mainState: mainState,
+            searchText: null,
+            selectedFile: null,
+            filename: null,
+        });
+    };
+
+    // TODO: Change colors to snet_blue
     render() {
-        const { classes} = this.props;
+        const {classes, theme} = this.props;
 
         return (
             <div className={classes.root}>
-                <Card className={this.props.cardName}>
-                    {(this.state.mainState === "initial" && this.renderInitialState()) ||
-                    (this.state.mainState === "search" && this.renderSearchState()) ||
-                    (this.state.mainState === "gallery" && this.renderGalleryState()) ||
-                    (this.state.mainState === "uploaded" && this.renderUploadedState()) ||
-                    (this.state.mainState === "error" && this.renderErrorState())}
-                </Card>
+                <MuiThemeProvider theme={theme}>
+                    <AppBar position="static" color="default">
+                        <Tabs
+                            value={this.state.value}
+                            onChange={this.handleTabChange}
+                            indicatorColor="primary"
+                            textColor="primary"
+                            variant="fullWidth"
+                            TabIndicatorProps={{
+                                style: {
+                                    backgroundColor: snet_blue,
+                                }
+                            }}
+                        >
+                            <Tab className={classes.tab} style={{textColorPrimary: snet_blue}} label="Upload"/>
+                            <Tab label="URL"/>
+                            <Tab label="Gallery"/>
+                        </Tabs>
+                    </AppBar>
+                    <SwipeableViews
+                        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                        index={this.state.value}
+                        onChangeIndex={this.handleTabChangeIndex}
+                    >
+                        <TabContainer dir={theme.direction}>
+                            {this.state.imageUploaded ? this.renderUploadedState() : this.renderUploadState()}
+                        </TabContainer>
+                        <TabContainer dir={theme.direction}>
+                            {this.state.imageUploaded ? this.renderUploadedState() : this.renderSearchState()}
+                        </TabContainer>
+                        <TabContainer dir={theme.direction}>
+                            {this.state.imageUploaded ? this.renderUploadedState() : this.renderGalleryState()}
+                        </TabContainer>
+                    </SwipeableViews>
+                </MuiThemeProvider>
             </div>
+            //
+            // <div className={classes.root}>
+            //     <Card className={classes.mainCard}>
+            //         <Grid container direction="column" justify="center" alignItems={"center"}>
+            //             {(this.state.mainState === "initial" && this.renderInitialState()) ||
+            //             (this.state.mainState === "search" && this.renderSearchState()) ||
+            //             (this.state.mainState === "gallery" && this.renderGalleryState()) ||
+            //             (this.state.mainState === "loading" && this.renderLoadingState()) ||
+            //             (this.state.mainState === "uploaded" && this.renderUploadedState()) ||
+            //             (this.state.mainState === "error" && this.renderErrorState())}
+            //         </Grid>
+            //     </Card>
+            // </div>
         );
     }
 }
 
-export default withStyles(styles, { withTheme: true })(ImageUploadCard);
+ImageUploadCard.propTypes = {
+    classes: PropTypes.object.isRequired,
+    theme: PropTypes.object.isRequired,
+};
+
+ImageUploadCard.defaultProps = {
+    imageGallery: [],
+};
+
+export default withStyles(styles, {withTheme: true})(ImageUploadCard);
+//TODO: Comment code!
+//TODO: Test base64 image size vs its real size (downloaded from google)
