@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
 import ImageUploadComponent from "./ImageUploadComponent";
-import NamedEntityRecognition from "./NamedEntityRecognition"
 
-const galleryImageList = [
+const imageGallery = [
   "https://raw.githubusercontent.com/dxyang/StyleTransfer/master/style_imgs/mosaic.jpg",
   "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg",
   "https://raw.githubusercontent.com/ShafeenTejani/fast-style-transfer/master/examples/dora-maar-picasso.jpg",
@@ -16,8 +15,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <ImageUploadComponent  imageGallery={galleryImageList}/>
-
+        <ImageUploadComponent  componentName="Input Image" imageGallery={imageGallery}/>
       </div>
     );
   }
