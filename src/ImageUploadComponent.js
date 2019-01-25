@@ -20,6 +20,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 // Transitions
 import Fade from '@material-ui/core/Fade';
 import Grow from '@material-ui/core/Grow';
+import Slide from '@material-ui/core/Slide';
 // Colors
 import {grey, red, blue} from "@material-ui/core/colors";
 // For tab views
@@ -33,20 +34,28 @@ import GridListTile from "@material-ui/core/GridListTile";
 import Hidden from "@material-ui/core/Hidden";
 import AppBar from '@material-ui/core/AppBar';
 import {Toolbar} from "@material-ui/core";
-
+// Error Snackbar
+import Snackbar from '@material-ui/core/Snackbar';
+// Card
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
 // Global variables
 const snet_blue = blue[500];
 const snet_grey = grey[500];
-const snet_error = red[500];
+const snet_red = red[500];
+const snet_background_red = red[100];
 const snet_background_grey = grey[200];
-const errorMessage =
-    "Incorrect image URL or permission denied by image server." + <br/> +
-    "Make sure the URL provided is correct or try uploading the image from a file or another server.";
+const errorMessage = "Incorrect image URL or permission denied by image server.";
 const spacingUnit = 8;
 const themeDirection = 'ltr';
+const snet_fontFamily = "Montserrat";
+
 const theme = createMuiTheme({
+    fontFamily: "Montserrat",
     palette: {
         primary: blue,
+        error: red,
     },
     typography: {useNextVariants: true},
 });
@@ -62,10 +71,11 @@ class SNETImageUpload extends React.Component {
 
         this.state = {
             value: 0, // Current tab value
-            mainState: "initial", // initial, search, gallery, loading, uploaded, error
+            mainState: "initial", // initial, loading, uploaded
             searchText: null,
             selectedFile: null,
             filename: null,
+            displayError: false,
         };
 
         this.urlCallback = this.urlCallback.bind(this);
@@ -90,16 +100,16 @@ class SNETImageUpload extends React.Component {
         const reader = new FileReader();
         reader.readAsDataURL(file);
 
-        reader.onloadend = function () {
+        reader.onloadend = () => {
             this.setState({
-                mainState: "uploaded", // initial, search, gallery, loading, uploaded, error
+                mainState: "uploaded", // initial, loading, uploaded
                 searchText: null,
                 selectedFile: [reader.result],
-                filename: null, //TODO: Get filename
+                filename: file.name,
             });
             console.log(this.state.selectedFile[0]);
-        }.bind(this);
-    }
+        };
+    };
 
     renderUploadTab() {
         return (
@@ -185,6 +195,7 @@ class SNETImageUpload extends React.Component {
                                 margin: spacingUnit,
                                 flexBasis: 200,
                             }}
+                            fullWidth={true}
                             variant="outlined"
                             type="text"
                             label="Image URL"
@@ -231,7 +242,7 @@ class SNETImageUpload extends React.Component {
         return (
             <GridList
                 cellHeight={150}
-                cols={3}
+                cols={this.props.galleryCols}
                 spacing={spacingUnit}
                 style={{
                     justifyContent: "center",
@@ -306,11 +317,10 @@ class SNETImageUpload extends React.Component {
             searchText: null,
             selectedFile: null,
             filename: null,
+            displayError: false,
         });
     };
 
-
-    // TODO: add filename
     renderUploadedState() {
         return (
             <Grid container spacing={24}>
@@ -367,87 +377,15 @@ class SNETImageUpload extends React.Component {
     /* ---------------
        - ERROR STATE -
     *  ---------------*/
-
-    // TODO: implement specify error message, reset to initial state.
     handleError = (e) => {
         this.setState({
-            mainState: "error",
+            mainState: "initial",
+            value: 1,
+            searchText: null,
+            selectedFile: null,
+            filename: null,
+            displayError: true,
         });
-        this.renderErrorState(e);
-    };
-
-    renderErrorState(error) {
-        console.log(error);
-        return (
-            <Grid
-                container
-                spacing={24}
-                direction="column"
-                alignItems="center"
-            >
-                <Grid item xs={12}/>
-                <Grid item xs={12}/>
-                <Grid item xs={12}>
-                    <Fade
-                        in={this.state.mainState === "error"}
-                        unmountOnExit
-                    >
-                        <IconButton
-                            style={{
-                                color: "red",
-                            }}
-                            aria-label="Close"
-                            onClick={this.handleImageReset}
-                        >
-                            <ErrorOutlinedIcon/>
-                        </IconButton>
-                        <Typography
-                            style={{
-                                color: snet_error,
-                            }}
-                        >
-                            {errorMessage}
-                            }}
-                        </Typography>
-                    </Fade>
-                </Grid>
-                <Grid item xs={12}/>
-                <AppBar
-                    position="relative"
-                    style={{
-                        top: 'auto',
-                        bottom: 0,
-                        backgroundColor: snet_background_grey,
-                        textColor: "black",
-                    }}
-                    color="inherit"
-                >
-                    <Toolbar
-                        color="white"
-                        style={{
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                        }}
-                    >
-                        <Typography color="inherit">
-                            {"File: " + this.state.filename}
-                        </Typography>
-                        <div>
-                            <IconButton
-                                style={{
-                                    color: "gray",
-                                    margin: 10,
-                                    right: 0,
-                                }}
-                                onClick={this.handleImageReset}
-                            >
-                                <CloseIcon/>
-                            </IconButton>
-                        </div>
-                    </Toolbar>
-                </AppBar>
-            </Grid>
-        );
     };
 
     /* -----------------
@@ -474,28 +412,56 @@ class SNETImageUpload extends React.Component {
 
     renderTabs() {
         return (
+            <div>
+                <SwipeableViews
+                    axis='x'
+                    index={this.state.value}
+                >
+                    <this.TabContainer dir={themeDirection}>
+                        {this.renderUploadTab()}
+                    </this.TabContainer>
+                    <this.TabContainer dir={themeDirection}>
+                        {this.renderSearchTab()}
+                    </this.TabContainer>
+                    <this.TabContainer dir={themeDirection}>
+                        {this.renderGalleryTab()}
+                    </this.TabContainer>
+                </SwipeableViews>
+                <Snackbar
+                    style={{
+                        position: "relative",
+                        backgroundColor: theme.palette.error,
+                    }}
 
-            <SwipeableViews
-                axis='x'
-                index={this.state.value}
-            >
-                <this.TabContainer dir={themeDirection}>
-                    {this.renderUploadTab()}
-                </this.TabContainer>
-                <this.TabContainer dir={themeDirection}>
-                    {this.renderSearchTab()}
-                </this.TabContainer>
-                <this.TabContainer dir={themeDirection}>
-                    {this.renderGalleryTab()}
-                </this.TabContainer>
-            </SwipeableViews>
-
+                    open={this.state.displayError}
+                    autoHideDuration={1}
+                    message={errorMessage}
+                    TransitionComponent={Slide}
+                    action={[
+                        <IconButton
+                            key="close"
+                            aria-label="Close"
+                            color="inherit"
+                            onClick={() => {
+                                this.setState({displayError: false})
+                            }}
+                        >
+                            <CloseIcon/>
+                        </IconButton>,
+                    ]}
+                />
+            </div>
         );
     };
 
     render() {
         return (
-            <div height={100}>
+            <Card
+                // style={{
+                //     width: 300,
+                //     height: 300,
+                // }}
+            >
                 <AppBar
                     position="relative"
                     style={{
@@ -511,7 +477,7 @@ class SNETImageUpload extends React.Component {
                             noWrap
                             style={{
                                 color: "black",
-                                fontFamily: "Montserrat",
+                                font: snet_fontFamily,
                                 align: "center",
                                 padding: 1,
                             }}
@@ -533,7 +499,7 @@ class SNETImageUpload extends React.Component {
                             >
                                 {/*Renders image galleries if non-empty list of URLs is passed
                                     // style={{color: this.state.value === 2 ? snet_blue : snet_grey}}*/}
-                                <Tab value={0} label="Upload"/>
+                                <Tab value={0} label={<span style={{fontFamily: "Montserrat"}}>Upload</span>}/>
                                 <Tab value={1} label="URL"/>
                                 {this.props.imageGallery.length > 0 && <Tab value={2} label="Gallery"/>}
                             </Tabs>
@@ -556,13 +522,27 @@ class SNETImageUpload extends React.Component {
                         (this.state.mainState === "error" && this.renderErrorState())
                     }
                 </Paper>
-            </div>
+                {/*<TextField*/}
+                {/*error*/}
+                {/*style={{*/}
+                {/*backgroundColor: snet_background_red,*/}
+                {/*align: "center",*/}
+                {/*textAlign: "center",*/}
+                {/*}}*/}
+                {/*fullWidth={true}*/}
+                {/*multiline={true}*/}
+                {/*variant="outlined"*/}
+                {/*value={errorMessage}*/}
+                {/*/>*/}
+
+            </Card>
         );
     };
 }
 
 SNETImageUpload.defaultProps = {
     imageGallery: [],
+    galleryCols: 1,
     componentName: "Input Image",
 };
 

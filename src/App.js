@@ -21,7 +21,11 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <ImageUploadComponent  componentName="Input Image" imageGallery={imageGallery}/>
+        <ImageUploadComponent
+            componentName="Input Image"
+            imageGallery={imageGallery}
+            galleryCols={3}
+        />
       </div>
     );
   }
