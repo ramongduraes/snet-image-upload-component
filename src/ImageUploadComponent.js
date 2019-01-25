@@ -24,7 +24,7 @@ import Slide from '@material-ui/core/Slide';
 // Colors
 import {grey, red, blue} from "@material-ui/core/colors";
 // For tab views
-import {DropzoneArea} from 'material-ui-dropzone'
+import { DropzoneArea } from 'material-ui-dropzone'
 import SwipeableViews from 'react-swipeable-views';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -40,6 +40,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
+import ImageUploadComponent from "./App";
 // Global variables
 const snet_blue = blue[500];
 const snet_grey = grey[500];
@@ -77,8 +78,12 @@ class SNETImageUpload extends React.Component {
             filename: null,
             displayError: false,
         };
-
+        this.tabStyle = {
+            padding: 8 * 3,
+            height: this.props.height
+        };
         this.urlCallback = this.urlCallback.bind(this);
+
     }
 
 
@@ -113,13 +118,14 @@ class SNETImageUpload extends React.Component {
 
     renderUploadTab() {
         return (
-            <MuiThemeProvider theme={theme}>
-                <DropzoneArea
-                    filesLimit={1}
-                    acceptedFiles={["image/jpg", "image/jpeg", "image/png", "image/bmp"]}
-                    onChange={this.handleDropzoneUpload.bind(this)}
-                />
-            </MuiThemeProvider>
+            <DropzoneArea
+                filesLimit={1}
+                acceptedFiles={["image/jpg", "image/jpeg", "image/png", "image/bmp"]}
+                onChange={this.handleDropzoneUpload.bind(this)}
+                style={{
+                    backgroundColor: "blue",
+                    height: this.props.height + "px"}}
+            />
         );
     }
 
@@ -180,22 +186,22 @@ class SNETImageUpload extends React.Component {
         return (
             <Grid
                 container
-                spacing={24}
-                direction="column"
+                direction="row"
+                justify="center"
                 alignItems="center"
+                style={{
+                    flexGrow: 1,
+                    backgroundColor: "blue",
+                    height: this.props.height + "px"
+                }}
             >
-                <Grid item xs={12}/>
-                <Grid item xs={12}/>
-                <Grid item xs={12}>
+                <Grid item xs={12} style={{backgroundColor: "red"}}>
                     <MuiThemeProvider theme={theme}>
                         <TextField
                             style={{
-                                width: "100",
+                                width: "80%",
                                 primary: snet_blue,
-                                margin: spacingUnit,
-                                flexBasis: 200,
                             }}
-                            fullWidth={true}
                             variant="outlined"
                             type="text"
                             label="Image URL"
@@ -218,7 +224,6 @@ class SNETImageUpload extends React.Component {
                         />
                     </MuiThemeProvider>
                 </Grid>
-                <Grid item xs={12}/>
             </Grid>
         );
     }
@@ -240,39 +245,39 @@ class SNETImageUpload extends React.Component {
     renderGalleryTab() {
 
         return (
-            <GridList
-                cellHeight={150}
-                cols={this.props.galleryCols}
-                spacing={spacingUnit}
-                style={{
-                    justifyContent: "center",
-                    overflow: 'hidden',
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
-                    transform: 'translateZ(0)',
-                    position: "relative",
-                    alignContent: "justify",
-                    alignItems: "center",
-                }}
-            >
-                {this.props.imageGallery.map((url, i) => (
-                    <Grow
-                        in={this.state.value === 2}
-                        style={{transformOrigin: '0 0 0'}}
-                        {...(this.state.value === 2 ? {timeout: i * 1000} : {})}
-                        key={i}
-                    >
-                        <GridListTile key={i}>
-                            <img
-                                src={url}
-                                alt={"Gallery Image " + i}
-                                onClick={() => this.handleGalleryImageClick({url})}
-                            />
-                        </GridListTile>
-                    </Grow>
-                ))}
-            </GridList>
+            <div style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: 'space-around',
+                overflow: 'hidden',
+            }}>
+                <GridList
+                    cellHeight={150}
+                    cols={this.props.galleryCols}
+                    spacing={spacingUnit}
+                    style={{
+                        width: 500,
+                        height: this.props.height,
+                    }}
+                >
+                    {this.props.imageGallery.map((url, i) => (
+                        <Grow
+                            in={this.state.value === 2}
+                            style={{transformOrigin: '0 0 0'}}
+                            {...(this.state.value === 2 ? {timeout: i * 1000} : {})}
+                            key={i}
+                        >
+                            <GridListTile key={i}>
+                                <img
+                                    src={url}
+                                    alt={"Gallery Image " + i}
+                                    onClick={() => this.handleGalleryImageClick({url})}
+                                />
+                            </GridListTile>
+                        </Grow>
+                    ))}
+                </GridList>
+            </div>
         );
     };
 
@@ -409,30 +414,33 @@ class SNETImageUpload extends React.Component {
         );
     };
 
-
     renderTabs() {
         return (
-            <div>
+            <div style={{
+                position: 'relative',
+                overflow: 'hidden'
+            }} >
                 <SwipeableViews
                     axis='x'
                     index={this.state.value}
                 >
-                    <this.TabContainer dir={themeDirection}>
+                    <div style={this.tabStyle}>
                         {this.renderUploadTab()}
-                    </this.TabContainer>
-                    <this.TabContainer dir={themeDirection}>
+                    </div>
+                    <div style={this.tabStyle}>
                         {this.renderSearchTab()}
-                    </this.TabContainer>
-                    <this.TabContainer dir={themeDirection}>
+                    </div>
+                    <div style={this.tabStyle}>
                         {this.renderGalleryTab()}
-                    </this.TabContainer>
+                    </div>
                 </SwipeableViews>
                 <Snackbar
                     style={{
-                        position: "relative",
-                        backgroundColor: theme.palette.error,
+                        position: "absolute",
+                        width: "100%"
                     }}
 
+                    ContentProps={{backgroundColor: "red"}}
                     open={this.state.displayError}
                     autoHideDuration={1}
                     message={errorMessage}
@@ -456,72 +464,80 @@ class SNETImageUpload extends React.Component {
 
     render() {
         return (
-            <Card
-                // style={{
-                //     width: 300,
-                //     height: 300,
-                // }}
+            <Grid container
+                  direction="row"
+                  justify="center"
+                  alignItems="center"
+                  style={{
+                      width: this.props.width + '%',
+                      backgroundColor: "blue",
+                  }}
             >
-                <AppBar
-                    position="relative"
-                    style={{
-                        top: 'auto',
-                        backgroundColor: "white",
-                        textColor: "black",
-                    }}
-                >
-                    <Toolbar style={{justifyContent: 'space-between',}}>
-                        <Typography
-                            variant="h6"
-                            color="inherit"
-                            noWrap
-                            style={{
-                                color: "black",
-                                font: snet_fontFamily,
-                                align: "center",
-                                padding: 1,
-                            }}
-                        >
-                            {this.props.componentName}
-                        </Typography>
-                        <MuiThemeProvider theme={theme}>
-                            <Tabs
-                                value={this.state.value}
-                                onChange={this.handleTabChange}
-                                indicatorColor="primary"
-                                textColor="primary"
-                                variant="scrollable"
-                                scrollButtons="on"
+                <Grid item xs={12} style={{
+                    height: '64px',
+                    backgroundColor: "yellow",
+                }}>
+                    <AppBar
+                        position="relative"
+                        style={{
+                            backgroundColor: "white",
+                            textColor: "black",
+                        }}
+                    >
+                        <Toolbar style={{justifyContent: 'space-between',}}>
+                            <Typography
+                                variant="h6"
+                                color="inherit"
+                                noWrap
                                 style={{
-                                    color: snet_grey,
+                                    color: "black",
+                                    font: snet_fontFamily,
+                                    align: "center",
+                                    padding: 1,
                                 }}
-                                // TabIndicatorProps={{ style: { backgroundColor: snet_blue } }}
                             >
-                                {/*Renders image galleries if non-empty list of URLs is passed
+                                {this.props.componentName}
+                            </Typography>
+                            <MuiThemeProvider theme={theme}>
+                                <Tabs
+                                    value={this.state.value}
+                                    onChange={this.handleTabChange}
+                                    indicatorColor="primary"
+                                    textColor="primary"
+                                    variant="scrollable"
+                                    scrollButtons="on"
+                                    style={{
+                                        color: snet_grey,
+                                    }}
+                                    // TabIndicatorProps={{ style: { backgroundColor: snet_blue } }}
+                                >
+                                    {/*Renders image galleries if non-empty list of URLs is passed
                                     // style={{color: this.state.value === 2 ? snet_blue : snet_grey}}*/}
-                                <Tab value={0} label={<span style={{fontFamily: "Montserrat"}}>Upload</span>}/>
-                                <Tab value={1} label="URL"/>
-                                {this.props.imageGallery.length > 0 && <Tab value={2} label="Gallery"/>}
-                            </Tabs>
-                        </MuiThemeProvider>
-                        <div>
-                            {/*TODO: Implement hidden button. Added according of greg's suggestions*/}
-                            <Hidden xsUp>
-                                <IconButton style={{right: 0,}}>
-                                    <MoreVertIcon/>
-                                </IconButton>
-                            </Hidden>
-                        </div>
-                    </Toolbar>
-                </AppBar>
-                <Paper elevation={1} style={{backgroundColor: snet_background_grey}}>
+                                    <Tab value={0} label={<span style={{fontFamily: "Montserrat"}}>Upload</span>}/>
+                                    <Tab value={1} label="URL"/>
+                                    {this.props.imageGallery.length > 0 && <Tab value={2} label="Gallery"/>}
+                                </Tabs>
+                            </MuiThemeProvider>
+                            <div>
+                                {/*TODO: Implement hidden button. Added according of greg's suggestions*/}
+                                <Hidden xsUp>
+                                    <IconButton style={{right: 0}}>
+                                        <MoreVertIcon/>
+                                    </IconButton>
+                                </Hidden>
+                            </div>
+                        </Toolbar>
+                    </AppBar>
+                </Grid>
+                <Grid item xs={12} style={{backgroundColor: snet_background_grey}}>
                     {
                         (this.state.mainState === "initial" && this.renderTabs()) ||
                         (this.state.mainState === "loading" && this.renderLoadingState()) ||
                         (this.state.mainState === "uploaded" && this.renderUploadedState()) ||
                         (this.state.mainState === "error" && this.renderErrorState())
                     }
-                </Paper>
+                </Grid>
+
                 {/*<TextField*/}
                 {/*error*/}
                 {/*style={{*/}
@@ -534,8 +550,7 @@ class SNETImageUpload extends React.Component {
                 {/*variant="outlined"*/}
                 {/*value={errorMessage}*/}
                 {/*/>*/}
-
-            </Card>
+            </Grid>
         );
     };
 }

@@ -20,11 +20,13 @@ const imageGallery = [
 class App extends Component {
   render() {
     return (
-      <div className="App">
+      <div className="App" style={{height: "2000px", backgroundColor: "green"}}>
         <ImageUploadComponent
             componentName="Input Image"
             imageGallery={imageGallery}
             galleryCols={3}
+            height={400}
+            width={50}
         />
       </div>
     );
