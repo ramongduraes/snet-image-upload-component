@@ -37,7 +37,7 @@ class App extends Component {
                     galleryCols={3}
                     height={180}
                     width="90%"
-                    // infoTip="Upload the image that will be processed by the service."
+                    infoTip="Upload the image that will be processed by the service."
                 />
             </div>
         );

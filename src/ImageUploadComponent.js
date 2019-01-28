@@ -657,7 +657,7 @@ class SNETImageUpload extends React.Component {
                             <Grid item xs>
                                 {this.props.infoTip.length > 0 &&
                                 <Tooltip title={this.props.infoTip}>
-                                    <InfoIcon style={{...this.iconStyle, backgroundColor: "yellow",}}/>
+                                    <InfoIcon style={{...this.iconStyle, color:snetGrey}}/>
                                 </Tooltip>
                                 }
                             </Grid>
