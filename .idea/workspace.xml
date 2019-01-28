@@ -3,10 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="ec2826c0-a328-48f9-8c95-207adf1f5801" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ImageUploadComponent.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ImageUploadComponent.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,35 +17,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ImageUploadComponent.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="405">
-              <caret line="660" column="27" lean-forward="true" selection-start-line="660" selection-start-column="27" selection-end-line="660" selection-end-column="27" />
+            <state relative-caret-position="281">
+              <caret line="153" column="61" selection-start-line="153" selection-start-column="61" selection-end-line="153" selection-end-column="61" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
-                <element signature="e#305#354#0" expanded="true" />
+                <element signature="e#305#350#0" expanded="true" />
                 <element signature="e#468#510#0" expanded="true" />
                 <element signature="e#676#727#0" expanded="true" />
                 <element signature="e#1160#1212#0" expanded="true" />
-                <element signature="e#1343#1393#0" expanded="true" />
+                <element signature="e#1403#1453#0" expanded="true" />
                 <element signature="e#1533#1583#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/index.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="10" selection-start-column="10" selection-end-column="10" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/node_modules/react/cjs/react.development.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="1155" selection-start-line="1155" selection-end-line="1155" />
             </state>
           </provider>
         </entry>
@@ -55,11 +35,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/App.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="435">
-              <caret line="29" column="76" selection-start-line="29" selection-start-column="76" selection-end-line="29" selection-end-column="76" />
-              <folding>
-                <element signature="e#0#41#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="570">
+              <caret line="40" column="18" lean-forward="true" selection-start-line="40" selection-start-column="18" selection-end-line="40" selection-end-column="18" />
             </state>
           </provider>
         </entry>
@@ -67,7 +44,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="224">
+            <state relative-caret-position="225">
               <caret line="15" column="4" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="4" />
             </state>
           </provider>
@@ -77,36 +54,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>componentName</find>
-      <find>maxSize</find>
-      <find>snet_blue</find>
-      <find>Tab</find>
-      <find>label</find>
-      <find>this.text</find>
-      <find>this.tabLabel</find>
-      <find>Tooltip</find>
-      <find>createMui</find>
-      <find>loading</find>
-      <find>createMuiTheme</find>
-      <find>MuiThemeProvider</find>
-      <find>let</find>
-      <find>styles</find>
-      <find>uploadIco</find>
-      <find>textField</find>
-      <find>TextField</find>
-      <find>theme</find>
-      <find>snetBlue</find>
-      <find>MuiTheme</find>
-      <find>snackbar</find>
-      <find>MySna</find>
-      <find>MySn</find>
-      <find>MySnack</find>
-      <find>backgroundColor</find>
-      <find>render</find>
-      <find>Snack</find>
-      <find>Snackbar</find>
-      <find>AppBar</find>
-      <find>yellow</find>
+      <find>Callback</find>
+      <find>selectedFile</find>
+      <find>sendURL</find>
+      <find>px</find>
+      <find>&quot;px&quot;</find>
+      <find>%</find>
+      <find>IconBu</find>
+      <find>position</find>
+      <find>Gallery</find>
+      <find>renderGallery</find>
+      <find>this.props.height</find>
+      <find>this.props.max</find>
+      <find>snetGreen</find>
+      <find>renderUploaded</find>
+      <find>this.props.imageDataFunc</find>
+      <find>this.</find>
+      <find>this.props.width</find>
+      <find>Tabs</find>
+      <find>renderTabs</find>
+      <find>renderLoading</find>
+      <find>renderUploadTab</find>
+      <find>renderLoad</find>
+      <find>iconStyle</find>
+      <find>flexG</find>
+      <find>red</find>
+      <find>&quot;cyan&quot;</find>
+      <find>minWidth</find>
+      <find>props.height</find>
+      <find>renderGalleryTab</find>
+      <find>Dropzone</find>
     </findStrings>
     <replaceStrings>
       <replace>selectedFile</replace>
@@ -116,8 +93,13 @@
       <replace>spacingUnit</replace>
       <replace>themeDirection</replace>
       <replace>this.snetBlue</replace>
-      <replace>imageName</replace>
       <replace>mainColor</replace>
+      <replace>imageName</replace>
+      <replace>allowedInputTypes</replace>
+      <replace>displayImageName</replace>
+      <replace>selectedImage</replace>
+      <replace>allowURL</replace>
+      <replace>this.height</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -138,7 +120,7 @@
   <component name="ProjectFrameBounds" extendedState="4">
     <option name="x" value="67" />
     <option name="y" value="25" />
-    <option name="width" value="839" />
+    <option name="width" value="654" />
     <option name="height" value="1055" />
   </component>
   <component name="ProjectView">
@@ -229,7 +211,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="141520000" />
+    <option name="totallyTimeSpent" value="180731000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -241,10 +223,34 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="67" y="25" width="839" height="1055" extended-state="4" />
+    <frame x="67" y="25" width="654" height="1055" extended-state="4" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2977941" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.42414355" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="npm" order="2" side_tool="true" />
+      <window_info id="Favorites" order="3" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32937366" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32937366" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.32937366" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="8" weight="0.32937366" />
+      <window_info anchor="bottom" id="Database Changes" order="9" />
+      <window_info anchor="bottom" id="Terminal" order="10" weight="0.32937366" />
+      <window_info anchor="bottom" id="Python Console" order="11" weight="0.32937366" />
+      <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="SciView" order="3" />
+      <window_info anchor="right" id="Database" order="4" />
+    </layout>
+    <layout-to-restore>
+      <window_info content_ui="combo" id="Project" order="0" weight="0.4253876" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
@@ -260,30 +266,6 @@
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Terminal" order="10" visible="true" weight="0.32937366" />
       <window_info anchor="bottom" id="Python Console" order="11" weight="0.32937366" />
-      <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="SciView" order="3" />
-      <window_info anchor="right" id="Database" order="4" />
-    </layout>
-    <layout-to-restore>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.2068654" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="npm" order="2" side_tool="true" />
-      <window_info id="Favorites" order="3" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32937366" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" />
-      <window_info anchor="bottom" id="Database Changes" order="9" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.32937366" />
-      <window_info anchor="bottom" id="Python Console" order="11" />
       <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -358,13 +340,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/NamedEntityRecognition.js" />
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="15" column="4" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/node_modules/react/cjs/react.development.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="198">
@@ -379,17 +354,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external/react.d.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="908" column="8" selection-start-line="908" selection-start-column="8" selection-end-line="908" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" column="4" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/ImageUploadComponent.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="660" column="27" lean-forward="true" selection-start-line="660" selection-start-column="27" selection-end-line="660" selection-end-column="27" />
+        <state relative-caret-position="281">
+          <caret line="153" column="61" selection-start-line="153" selection-start-column="61" selection-end-line="153" selection-end-column="61" />
           <folding>
             <element signature="e#0#26#0" expanded="true" />
-            <element signature="e#305#354#0" expanded="true" />
+            <element signature="e#305#350#0" expanded="true" />
             <element signature="e#468#510#0" expanded="true" />
             <element signature="e#676#727#0" expanded="true" />
             <element signature="e#1160#1212#0" expanded="true" />
-            <element signature="e#1343#1393#0" expanded="true" />
+            <element signature="e#1403#1453#0" expanded="true" />
             <element signature="e#1533#1583#0" expanded="true" />
           </folding>
         </state>
@@ -397,11 +386,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/App.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="29" column="76" selection-start-line="29" selection-start-column="76" selection-end-line="29" selection-end-column="76" />
-          <folding>
-            <element signature="e#0#41#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="570">
+          <caret line="40" column="18" lean-forward="true" selection-start-line="40" selection-start-column="18" selection-end-line="40" selection-end-column="18" />
         </state>
       </provider>
     </entry>

@@ -7,8 +7,7 @@ import Grid from "@material-ui/core/Grid";
 // Buttons and clickable components
 import IconButton from "@material-ui/core/IconButton";
 // Icons
-import CloseIcon from "@material-ui/icons/Close";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
+import RefreshIcon from "@material-ui/icons/Refresh";
 import InfoIcon from "@material-ui/icons/Info";
 import ErrorIcon from "@material-ui/icons/Error"
 // Loading
@@ -18,15 +17,13 @@ import Fade from '@material-ui/core/Fade';
 import Grow from '@material-ui/core/Grow';
 import Slide from '@material-ui/core/Slide';
 // Colors
-import {grey, red, blue, green} from "@material-ui/core/colors";
+import {grey, red, blue} from "@material-ui/core/colors";
 // Tabs:
 import SwipeableViews from 'react-swipeable-views';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import AppBar from '@material-ui/core/AppBar';
-import {Toolbar, Tooltip} from "@material-ui/core";
+import {Tooltip} from "@material-ui/core";
 import Typography from '@material-ui/core/Typography';
-import Hidden from "@material-ui/core/Hidden";
 // Upload tab
 import Dropzone from 'react-dropzone';
 // Search tab
@@ -36,25 +33,26 @@ import SearchIcon from "@material-ui/icons/Search";
 // Gallery tab
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
-
-
+import GridListTileBar from "@material-ui/core/GridListTileBar"; // for image uploaded state
 // Error Snackbar
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 // Global variables
 
 
 // Color Palette
-//const mainColor = this.props.mainColor[500];
+// const mainColor = this.props.mainColor[500];
 
-const snetGreen = green[500];
 const snetGrey = grey[500];
+// const snetGreen = green[500];
 const snetGreyError = grey[700];
 const snetRed = red[500];
 const snetBackgroundRed = red[100];
 const snetBackgroundGrey = grey[100];
 const errorMessage = "Incorrect URL or permission denied by server.";
 const spacingUnit = 8;
+const snetFont = "Roboto";
 
 class SNETImageUpload extends React.Component {
 
@@ -67,9 +65,10 @@ class SNETImageUpload extends React.Component {
             value: 0, // Current tab value
             mainState: "initial", // initial, loading, uploaded
             searchText: null,
-            selectedFile: null,
+            selectedImage: null,
             filename: null,
             displayError: false,
+            displayImageName: false,
         };
         this.tabStyle = {
             position: 'relative',
@@ -77,26 +76,23 @@ class SNETImageUpload extends React.Component {
             paddingTop: spacingUnit * 4, // To accommodate AppBar
             padding: spacingUnit,
             height: this.props.height,
-
         };
         this.textStyle = {
-            fontFamily: "Montserrat",
+            fontFamily: snetFont,
             fontVariantCaps: "normal",
             textTransform: 'initial',
         };
         this.tabLabelStyle = {
             ...this.textStyle,
-            fontSize: 16,
+            fontSize: 14,
+        };
+        this.iconStyle = {
+            fontSize: 24,
+            size: "large",
         };
 
         // Color Palette
         this.mainColor = this.props.mainColor[500];
-        this.uploadIcon = (
-            <svg style={{width: "48x", height: "48px", color: this.mainColor}} viewBox="0 0 24 24">
-                <path fill={this.props.mainColor[500]}
-                      d="M14,13V17H10V13H7L12,8L17,13M19.35,10.03C18.67,6.59 15.64,4 12,4C9.11,4 6.6,5.64 5.35,8.03C2.34,8.36 0,10.9 0,14A6,6 0 0,0 6,20H19A5,5 0 0,0 24,15C24,12.36 21.95,10.22 19.35,10.03Z"/>
-            </svg>
-        );
         this.theme = createMuiTheme({
             palette: {
                 primary: this.props.mainColor,
@@ -120,7 +116,7 @@ class SNETImageUpload extends React.Component {
        - IMAGE UPLOAD -
     *  ----------------*/
 
-    handleDropzoneUpload(files, rejected) {
+    handleDropzoneUpload(files) {
         this.setLoadingState();
 
         const file = files[0];
@@ -131,10 +127,9 @@ class SNETImageUpload extends React.Component {
             this.setState({
                 mainState: "uploaded", // initial, loading, uploaded
                 searchText: null,
-                selectedFile: [reader.result],
+                selectedImage: reader.result,
                 filename: file.name,
-            });
-            console.log(this.state.selectedFile[0]);
+            }, () => this.props.imageDataFunc(this.state.selectedImage));
         };
     };
 
@@ -142,8 +137,8 @@ class SNETImageUpload extends React.Component {
         return (
             <Grid item xs={12}>
                 <Dropzone
-                    accept={this.props.imageTypes}
-                    onDrop={this.handleDropzoneUpload.bind(this)}
+                    accept={this.props.allowedInputTypes}
+                    onDropAccepted={this.handleDropzoneUpload.bind(this)}
                     maxSize={this.props.maxImageSize}
                 >
                     {({getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject}) => {
@@ -156,17 +151,18 @@ class SNETImageUpload extends React.Component {
                             borderRadius: 5,
                             flexGrow: 1,
                             cursor: "pointer",
-                            height: this.props.height + "px"
+                            height: this.props.height + "px",
                         };
                         styles = isDragActive ? {
                             ...styles,
+                            // borderWidth: 4,
                             borderStyle: 'solid',
-                            borderColor: snetGreen,
+                            borderColor: this.mainColor,
                         } : styles;
                         styles = isDragReject ? {
                             ...styles,
                             borderStyle: 'solid',
-                            borderColor: snetRed,
+                            borderColor: snetGrey,
                         } : styles;
 
                         return (
@@ -183,34 +179,67 @@ class SNETImageUpload extends React.Component {
                                       spacing={spacingUnit}
                                 >
                                     <Grid item>
-                                        {this.uploadIcon}
+                                        <svg style={{
+                                            width: "48x",
+                                            height: "48px",
+                                        }}
+                                             viewBox="0 0 24 24">
+                                            <path fill={isDragReject ? snetGrey : this.mainColor}
+                                                  d="M14,13V17H10V13H7L12,8L17,13M19.35,10.03C18.67,6.59 15.64,4 12,4C9.11,4 6.6,5.64 5.35,8.03C2.34,8.36 0,10.9 0,14A6,6 0 0,0 6,20H19A5,5 0 0,0 24,15C24,12.36 21.95,10.22 19.35,10.03Z"/>
+                                        </svg>
                                     </Grid>
                                     <Grid item>
-                                        <Typography
-                                            style={{
-                                                ...this.textStyle,
-                                                fontSize: 16,
-                                                color: snetGrey,
-                                                // {isDragAccept ? 'drop' : 'drag'}
-                                            }}
-                                        >
-                                            Drag and drop image here or <span
-                                            style={{color: this.mainColor}}>click</span>
-                                        </Typography>
+
+                                        {isDragReject ?
+                                            <Typography
+                                                style={{
+                                                    ...this.textStyle,
+                                                    fontSize: 16,
+                                                    color: snetGrey,
+                                                }}
+                                            >
+                                                File rejected!
+                                            </Typography>
+                                            :
+                                            <Typography
+                                                style={{
+                                                    ...this.textStyle,
+                                                    fontSize: 16,
+                                                    color: snetGrey,
+                                                }}
+                                            >
+                                                Drag and drop image here or
+                                                <span style={{color: this.mainColor}}> click</span>
+                                            </Typography>
+                                        }
                                     </Grid>
                                     <Grid item>
-                                        <Typography
-                                            style={{
-                                                ...this.textStyle,
-                                                color: snetGrey,
-                                                fontSize: 14,
-                                                padding: spacingUnit,
-                                            }}
-                                        >
-                                            (Image must be under {this.props.maxImageSize / 1000000}mb. Source images
-                                            are
-                                            not saved on the servers after the job is processed.)
-                                        </Typography>
+                                        {isDragReject ?
+                                            <Typography
+                                                style={{
+                                                    ...this.textStyle,
+                                                    color: snetGrey,
+                                                    fontSize: 14,
+                                                    padding: spacingUnit,
+                                                }}
+                                            >
+                                                File size must be smaller than {this.props.maxImageSize / 1000000}mb.
+                                                <br/>
+                                                File types accepted : {this.props.allowedInputTypes}.
+                                            </Typography>
+                                            :
+                                            <Typography
+                                                style={{
+                                                    ...this.textStyle,
+                                                    color: snetGrey,
+                                                    fontSize: 14,
+                                                    padding: spacingUnit,
+                                                }}
+                                            >
+                                                Image file must be smaller than {this.props.maxImageSize / 1000000}mb.
+                                                Source images are not saved on the servers after the job is processed.
+                                            </Typography>
+                                        }
                                     </Grid>
                                 </Grid>
                             </div>
@@ -225,14 +254,23 @@ class SNETImageUpload extends React.Component {
        - URL IMAGE SEARCH -
     *  --------------------*/
 
-    urlCallback(data, filename) {
-        console.log(data);
+    sendImageURL(url) {
+        const filename = url.substring(url.lastIndexOf("/") + 1);
         this.setState({
-            selectedFile: data,
+            selectedImage: url,
             mainState: "uploaded",
             filename: filename,
             searchText: null,
-        });
+        }, () => this.props.imageDataFunc(this.state.selectedImage));
+    }
+
+    urlCallback(data, filename) {
+        this.setState({
+            selectedImage: data,
+            mainState: "uploaded",
+            filename: filename,
+            searchText: null,
+        }, () => this.props.imageDataFunc(this.state.selectedImage));
     };
 
     toDataUrl = (src, callback, outputFormat) => {
@@ -268,8 +306,10 @@ class SNETImageUpload extends React.Component {
         // Does nothing if input is null
         if (this.state.searchText !== null) {
             this.setLoadingState();
-            const file = this.state.searchText;
-            this.toDataUrl(file, this.urlCallback);
+            const url = this.state.searchText;
+            // Directly sends data URL if allowed. Else, tries to convert image to base64
+            this.props.allowURL ?
+                this.sendImageURL(url) : this.toDataUrl(url, this.urlCallback, this.props.outputFormat)
         }
     };
 
@@ -295,7 +335,7 @@ class SNETImageUpload extends React.Component {
                             }}
                             variant="outlined"
                             type="text"
-                            label="Image URL"
+                            label={<Typography style={{...this.textStyle, color: snetGrey}}>Image URL</Typography>}
                             onChange={this.searchTextUpdate}
                             InputProps={{
                                 endAdornment: (
@@ -303,7 +343,7 @@ class SNETImageUpload extends React.Component {
                                         <IconButton
                                             style={{
                                                 color: this.mainColor,
-                                                margin: 10,
+
                                             }}
                                             onClick={this.handleSearchSubmit}
                                         >
@@ -325,13 +365,12 @@ class SNETImageUpload extends React.Component {
 
     handleGalleryImageClick(image) {
         this.setLoadingState();
-        const file = image.url;
-        const filename = image.url.substring(image.url.lastIndexOf("/") + 1);
-        console.log(filename);
-        this.toDataUrl(file, this.urlCallback);
+        const url = image.url;
+        // Directly sends data URL if allowed. Else, tries to convert image to base64
+        this.props.allowURL ?
+            this.sendImageURL(url) : this.toDataUrl(url, this.urlCallback)
     };
 
-    // TODO: fix loading taking too long bug
     renderGalleryTab() {
 
         return (
@@ -342,11 +381,10 @@ class SNETImageUpload extends React.Component {
                 overflow: 'hidden',
             }}>
                 <GridList
-                    cellHeight={150}
                     cols={this.props.galleryCols}
                     spacing={spacingUnit}
                     style={{
-                        width: 500,
+                        width: "100%",
                         height: this.props.height + "px",
                     }}
                 >
@@ -407,71 +445,55 @@ class SNETImageUpload extends React.Component {
     *  ------------------*/
 
     handleImageReset = () => {
-        console.log("Click!");
         this.setState({
             mainState: "initial", // initial, search, gallery, loading, uploaded, error
             searchText: null,
-            selectedFile: null,
+            selectedImage: null,
             filename: null,
             displayError: false,
+            displayImageName: false,
         });
     };
 
     renderUploadedState() {
         return (
-            <div style={this.tabStyle}>
-                <Grid item xs={12}>
-                    <div id="uploadedImageContainer">
-                        <img
-                            alt="Service input"
-                            src={this.state.selectedFile}
-                            onError={this.handleError}
-                            id="loadedImage"
-                            crossOrigin="anonymous"
-                            style={{
-                                maxWidth: "100%",
-                                maxHeight: this.props.height + "px",
-                            }}
-                        />
-                    </div>
-                </Grid>
-                <Grid item xs={12}>
-                    <AppBar
-                        position="absolute"
-                        style={{
-                            top: 'auto',
-                            bottom: 0,
-                            textColor: "black",
-                            backgroundColor: "transparent",
-                            boxShadow: "none",
-                            color: "black",
+            <Fade in={this.state.mainState === "uploaded"}>
+                <div style={{
+                    ...this.tabStyle,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-around',
+                    overflow: 'hidden',
+                }}
+                     onMouseOver={() => this.setState({displayImageName: true})}
+                     onMouseLeave={() => this.setState({displayImageName: false})}
+                >
+                    <img
+                        alt="Service input"
+                        src={this.state.selectedImage}
+                        onError={this.handleError}
+                        id="loadedImage"
+                        // crossOrigin="anonymous"
+                        style={this.props.displayProportionalImage ? {
+                            maxHeight: this.props.height,
+                            maxWidth: "100%",
+                        } : {
+                            height: this.props.height,
+                            width: "100%",
                         }}
-                    >
-                        <Toolbar
-                            style={{
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                            }}
-                        >
-                            <Typography color="inherit">
-                                {"File: " + this.state.filename}
-                            </Typography>
-                            <div>
-                                <IconButton
-                                    style={{
-                                        color: "gray",
-                                        margin: 10,
-                                        right: 0,
-                                    }}
-                                    onClick={this.handleImageReset}
-                                >
-                                    <CloseIcon/>
-                                </IconButton>
-                            </div>
-                        </Toolbar>
-                    </AppBar>
-                </Grid>
-            </div>
+                    />
+                    <Fade in={this.state.displayImageName}>
+                        <GridListTileBar
+                            style={{}}
+                            title={<Typography
+                                style={{
+                                    ...this.textStyle,
+                                    color: snetBackgroundGrey
+                                }}> {this.state.filename} </Typography>}
+                        />
+                    </Fade>
+                </div>
+            </Fade>
         );
     };
 
@@ -483,7 +505,7 @@ class SNETImageUpload extends React.Component {
             mainState: "initial",
             value: 1,
             searchText: null,
-            selectedFile: null,
+            selectedImage: null,
             filename: null,
             displayError: true,
         });
@@ -497,7 +519,7 @@ class SNETImageUpload extends React.Component {
         this.setState({
             value: value,
             mainState: "initial",
-            selectedFile: null,
+            selectedImage: null,
             filename: null,
         });
     };
@@ -519,191 +541,183 @@ class SNETImageUpload extends React.Component {
                         {this.renderGalleryTab()}
                     </div>
                 </SwipeableViews>
-                <Snackbar
-                    style={{
-                        position: "absolute",
-                        width: "100%"
-                    }}
-                    open={this.state.displayError}
-                    autoHideDuration={500}
-                    TransitionComponent={Slide}
-                >
-                    <SnackbarContent
+                <ClickAwayListener onClickAway={() => this.setState({displayError: false})}>
+                    <Snackbar
                         style={{
-                            backgroundColor: snetBackgroundRed,
-                            margin: spacingUnit,
-                            border: "2px solid",
-                            borderColor: snetRed,
-                            borderRadius: "5px"
+                            position: "absolute",
+                            width: "100%"
                         }}
-                        aria-describedby="client-snackbar"
-                        message={
-                            <span style={{color: snetGreyError, display: 'flex', alignItems: 'center',}}>
-                            <ErrorIcon style={{
-                                fontSize: 16,
-                                opacity: 0.9,
-                                marginRight: spacingUnit
-                            }}/>
-                                {errorMessage}
-                                <IconButton
-                                    key="close"
-                                    color="inherit"
-                                    aria-label="Close"
-                                    onClick={() => this.setState({displayError: false})}
-                                >
-                                <CloseIcon style={{fontSize: 16,}}/>
-                            </IconButton>
-                        </span>
-                        }
-                    />
-                </Snackbar>
-                {/*<Snackbar*/}
-                {/*style={{*/}
-                {/*position: "absolute",*/}
-                {/*width: "100%"*/}
-                {/*}}*/}
-                {/*open={this.state.displayError}*/}
-                {/*autoHideDuration={1}*/}
-                {/*message={errorMessage}*/}
-                {/*TransitionComponent={Slide}*/}
-                {/*action={[*/}
-                {/*<IconButton*/}
-                {/*key="close"*/}
-                {/*aria-label="Close"*/}
-                {/*color="inherit"*/}
-                {/*onClick={() => {*/}
-                {/*this.setState({displayError: false})*/}
-                {/*}}*/}
-                {/*>*/}
-                {/*<CloseIcon/>*/}
-                {/*</IconButton>,*/}
-                {/*]}*/}
-                {/*/>*/}
+                        open={this.state.displayError}
+                        autoHideDuration={6000}
+                        TransitionComponent={Slide}
+                        transitionDuration={300}
+                        onClose={() => this.setState({displayError: false})}
+                    >
+                        <SnackbarContent
+                            style={{
+                                backgroundColor: snetBackgroundRed,
+                                margin: "2px",
+                                border: "2px solid",
+                                borderColor: snetRed,
+                                borderRadius: "4px",
+                                padding: "2px",
+                                display: 'flex',
+                                justifyContent: "space-around",
+                                flexGrow: 1,
+                                width: "100%",
+                            }}
+                            aria-describedby="client-snackbar"
+                            message={
+                                <span style={{
+                                    color: snetGreyError,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    align: "center",
+                                    justifyContent: "space-between"
+                                }}>
+                                    <ErrorIcon style={{
+                                        fontSize: 16,
+                                        opacity: 0.9,
+                                        marginRight: spacingUnit,
+                                    }}/>
+                                    <Typography style={{...this.textStyle, color: snetGrey}}>
+                                        {errorMessage}
+                                    </Typography>
+                                </span>
+                            }
+                        />
+                    </Snackbar>
+                </ClickAwayListener>
             </div>
         );
     };
 
     render() {
         return (
-            <Grid container
-                  direction="row"
-                  justify="space-between"
-                  alignItems="center"
-                  style={{
-                      width: this.props.width + '%',
-                      backgroundColor: "white",
-                  }}
+            <div
+                style={{
+                    width: this.props.width,
+                    minHeight: "264px",
+                    minWidth: "400px",
+                    position: "absolute"
+                }}
             >
-                {/*<Grid item xs={12} style={{*/}
-                    {/*height: '64px',*/}
-                    {/*backgroundColor: "yellow",*/}
-                {/*}}>*/}
-                    {/*<AppBar*/}
-                    {/*position="relative"*/}
-                    {/*style={{*/}
-                    {/*backgroundColor: "white",*/}
-                    {/*textColor: "black",*/}
-                    {/*}}*/}
-                    {/*>*/}
-                    {/*<Toolbar style={{justifyContent: 'space-between',}}>*/}
-                    <Grid item xs={2}>
-                        <Typography
-                            variant="h6"
-                            color="inherit"
-                            noWrap
-                            style={{
-                                ...this.textStyle,
-                                color: "black",
-                                padding: 1,
-                            }}
-                        >
-                            {this.props.imageName}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={8}>
-                        <MuiThemeProvider theme={this.theme}>
-                            <Tabs
-                                value={this.state.value}
-                                onChange={this.handleTabChange}
-                                indicatorColor="primary"
-                                textColor="primary"
-                                variant="scrollable"
-                                scrollButtons="on"
-                                style={{
-                                    color: snetGrey,
-                                }}
-                                // TabIndicatorProps={{ style: { backgroundColor: this.mainColor } }}
-                            >
-                                {/*Renders image galleries if non-empty list of URLs is passed
+                <Grid container
+                      direction="row"
+                      justify="space-between"
+                      alignItems="center"
+                      style={{
+                          color: "black",
+                          backgroundColor: "white"
+                      }}
+                      spacing={0}
+
+                >
+                    <Grid item xs={12}>
+                        <Grid container direction="row" alignItems="center" style={{flexGrow: 1,}}>
+                            <Grid item xs>
+                                <Typography
+                                    color="inherit"
+                                    noWrap
+                                    variant="title"
+                                    style={{
+                                        ...this.textStyle,
+                                        color: "black",
+                                        padding: spacingUnit / 2,
+                                    }}
+                                >
+                                    {this.props.imageName}
+                                </Typography>
+                                {/*</Grid>*/}
+                                {/*<Grid item xs={5}>*/}
+                            </Grid>
+                            <Grid item xs>
+                                <MuiThemeProvider theme={this.theme}>
+                                    <Tabs
+                                        value={this.state.value}
+                                        onChange={this.handleTabChange}
+                                        indicatorColor="primary"
+                                        textColor="primary"
+                                        scrollButtons="on"
+                                        variant="fullWidth"
+                                        style={{
+                                            color: snetGrey,
+                                        }}
+                                        // TabIndicatorProps={{ style: { backgroundColor: this.mainColor } }}
+                                    >
+                                        {/*Renders image galleries if non-empty list of URLs is passed
                                     // style={{color: this.state.value === 2 ? this.mainColor : snetGrey}}*/}
-                                <Tab value={0} label={<span style={this.tabLabelStyle}>Upload</span>}/>
-                                <Tab value={1} label={<span style={this.tabLabelStyle}>URL</span>}/>
-                                {this.props.imageGallery.length > 0 &&
-                                <Tab value={2} label={<span style={this.tabLabelStyle}>Gallery</span>}/>}
-                            </Tabs>
-                        </MuiThemeProvider>
+                                        <Tab value={0} label={<span style={this.tabLabelStyle}>Upload</span>}/>
+                                        <Tab value={1} label={<span style={this.tabLabelStyle}>URL</span>}/>
+                                        {this.props.imageGallery.length > 0 &&
+                                        <Tab value={2} label={<span style={this.tabLabelStyle}>Gallery</span>}/>}
+                                    </Tabs>
+                                </MuiThemeProvider>
+                            </Grid>
+                            <Grid item xs>
+                                {this.props.infoTip.length > 0 &&
+                                <Tooltip title={this.props.infoTip}>
+                                    <InfoIcon style={{...this.iconStyle, backgroundColor: "yellow",}}/>
+                                </Tooltip>
+                                }
+                            </Grid>
+                            <Grid item xs>
+                                {this.state.mainState === "uploaded" &&
+                                <Fade in={this.state.mainState === "uploaded"}>
+                                    <Tooltip title="Click to reset!">
+                                        <IconButton style={{width: "20", height: "20"}}
+                                                    onClick={this.handleImageReset}>
+                                            <RefreshIcon style={{...this.iconStyle, color: this.mainColor}}/>
+                                        </IconButton>
+                                    </Tooltip>
+                                </Fade>
+                                }
+                            </Grid>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={2}>
-                        {this.props.infoTip.length > 0 &&
-                            <Tooltip title={this.props.infoTip}>
-                                <IconButton>
-                                    <InfoIcon/>
-                                </IconButton>
-                            </Tooltip>
+                    <Grid item xs={12} style={{backgroundColor: snetBackgroundGrey}}>
+                        {
+                            (this.state.mainState === "initial" && this.renderTabs()) ||
+                            (this.state.mainState === "loading" && this.renderLoadingState()) ||
+                            (this.state.mainState === "uploaded" && this.renderUploadedState())
                         }
-                        <div>
-                            {/*TODO: Implement hidden button. Added according of greg's suggestions*/}
-                            <Hidden xsUp>
-                                <IconButton style={{right: 0}}>
-                                    <MoreVertIcon/>
-                                </IconButton>
-                            </Hidden>
-                        </div>
                     </Grid>
-                    {/*</Toolbar>*/}
-                    {/*</AppBar>*/}
-                {/*</Grid>*/}
-                <Grid item xs={12} style={{backgroundColor: snetBackgroundGrey}}>
-                    {
-                        (this.state.mainState === "initial" && this.renderTabs()) ||
-                        (this.state.mainState === "loading" && this.renderLoadingState()) ||
-                        (this.state.mainState === "uploaded" && this.renderUploadedState())
-                    }
                 </Grid>
-            </Grid>
+            </div>
         );
     };
 }
 
 SNETImageUpload.propTypes = {
-    width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired,
+    width: PropTypes.string, // e.g.: "500px", "50%" (of parent component width)
+    height: PropTypes.number.isRequired, // always in pixels. E.g.: "300px"
+    imageDataFunc: PropTypes.func.isRequired,
     imageName: PropTypes.string.isRequired,
-    imageTypes: PropTypes.string, // TODO: specify which strings are allowed
+    outputFormat: PropTypes.oneOf(["image/png", "image/jpg", "image/jpeg"]), //TODO: test
+    allowedInputTypes: PropTypes.string, // TODO: specify which strings are allowed
     maxImageSize: PropTypes.number, // 10 mb
+    displayProportionalImage: PropTypes.bool,
     imageGallery: PropTypes.arrayOf(PropTypes.string), // TODO: check that items are URLs
     galleryCols: PropTypes.number,
     infoTip: PropTypes.string,
     mainColor: PropTypes.object,
-    returnBytes: PropTypes.bool,
-    //
-    // className: PropTypes.string,
-    // message: PropTypes.node,
-    // onClose: PropTypes.func,
-    // variant: PropTypes.oneOf(['success', 'warning', 'error', 'info']).isRequired,
 };
 
 SNETImageUpload.defaultProps = {
-    imageName: "A",
-    imageTypes: "image/*",
+    width: "500px",
+    height: "300px",
+    imageName: "Input Image",
+    outputFormat: "image/jpg",
+    allowedInputTypes: "image/*",
     maxImageSize: 10000000, // 10 mb
+    displayProportionalImage: true, // if true, keeps uploaded image proportions. Else stretches it
+    allowURL: false, // sends image URL instead of image data for both URL and Gallery modes. Might still send base64 if the user uploads an image
     imageGallery: [],
     galleryCols: 1,
     infoTip: "",
     mainColor: blue,
-    returnBytes: false,
 };
 
 export default (SNETImageUpload);
-// TODO: Test base64 image size vs its real size (downloaded from google)
+// TODO: check that image is being converted to user chosen output extension
 // TODO: limit max file size for gallery and search as well
