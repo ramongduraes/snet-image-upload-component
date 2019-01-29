@@ -1,3 +1,9 @@
+/*=========================================
+; Title:  Author Style Sample
+; Author: Darknite
+; Date:   7 Jan 2011
+;==========================================*/
+
 import React from "react";
 import PropTypes from 'prop-types';
 // Themes
@@ -452,7 +458,7 @@ class SNETImageUpload extends React.Component {
             filename: null,
             displayError: false,
             displayImageName: false,
-        });
+        }, () => this.props.imageDataFunc(this.state.selectedImage));
     };
 
     renderUploadedState() {
@@ -521,7 +527,7 @@ class SNETImageUpload extends React.Component {
             mainState: "initial",
             selectedImage: null,
             filename: null,
-        });
+        },() => this.props.imageDataFunc(this.state.selectedImage));
     };
 
     renderTabs() {
