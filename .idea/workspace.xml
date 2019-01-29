@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ec2826c0-a328-48f9-8c95-207adf1f5801" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/images/example1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/example2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/example3.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ImageUploadComponent.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ImageUploadComponent.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -35,8 +29,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/App.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="31" column="117" selection-start-line="31" selection-start-column="109" selection-end-line="31" selection-end-column="117" />
+            <state relative-caret-position="195">
+              <caret line="29" column="14" lean-forward="true" selection-start-line="29" selection-start-column="14" selection-end-line="29" selection-end-column="14" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
               </folding>
@@ -229,12 +223,12 @@
       <workItem from="1548188347217" duration="6000" />
       <workItem from="1548604182899" duration="6151000" />
       <workItem from="1548774670291" duration="620000" />
-      <workItem from="1548775753628" duration="12405000" />
+      <workItem from="1548775753628" duration="13213000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="195644000" />
+    <option name="totallyTimeSpent" value="196452000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -247,9 +241,10 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="993" y="25" width="927" height="1055" extended-state="4" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.20874317" />
-      <window_info id="Structure" order="1" side_tool="true" visible="true" weight="0.50553095" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49919486" visible="true" weight="0.2079646" />
+      <window_info id="Structure" order="1" sideWeight="0.50080514" side_tool="true" weight="0.2079646" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -262,7 +257,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.32937366" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.32937366" />
+      <window_info anchor="bottom" id="Terminal" order="10" visible="true" weight="0.32937366" />
       <window_info anchor="bottom" id="Python Console" order="11" weight="0.32937366" />
       <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -418,8 +413,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/App.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="31" column="117" selection-start-line="31" selection-start-column="109" selection-end-line="31" selection-end-column="117" />
+        <state relative-caret-position="195">
+          <caret line="29" column="14" lean-forward="true" selection-start-line="29" selection-start-column="14" selection-end-line="29" selection-end-column="14" />
           <folding>
             <element signature="e#0#39#0" expanded="true" />
           </folding>
