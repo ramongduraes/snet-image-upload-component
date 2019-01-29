@@ -88,12 +88,22 @@ class SNETImageUpload extends React.Component {
             textTransform: 'initial',
         };
         this.tabLabelStyle = {
-            ...this.textStyle,
+            // ...this.textStyle,
+            fontFamily: snetFont,
+            fontVariantCaps: "normal",
+            textTransform: 'initial',
             fontSize: 14,
         };
         this.iconStyle = {
             fontSize: 24,
             size: "large",
+        };
+        this.dropzoneRejectStyle = {
+            fontSize: 16,
+            color: snetGrey,
+            fontFamily: snetFont,
+            fontVariantCaps: "normal",
+            textTransform: 'initial',
         };
 
         // Color Palette
@@ -161,15 +171,31 @@ class SNETImageUpload extends React.Component {
                             padding: spacingUnit
                         };
                         styles = isDragActive ? {
-                            ...styles,
+                            // ...styles,
                             // borderWidth: 4,
                             borderStyle: 'solid',
                             borderColor: this.mainColor,
+                            borderWidth: 2,
+                            backgroundColor: dropzoneBackgroundGrey,
+                            borderRadius: 5,
+                            flexGrow: 1,
+                            cursor: "pointer",
+                            overflow: 'hidden',
+                            height: this.tabHeight - this.dropzoneHeightOffset + "px",
+                            padding: spacingUnit
                         } : styles;
                         styles = isDragReject ? {
-                            ...styles,
+                            // ...styles,
                             borderStyle: 'solid',
                             borderColor: snetGrey,
+                            borderWidth: 2,
+                            backgroundColor: dropzoneBackgroundGrey,
+                            borderRadius: 5,
+                            flexGrow: 1,
+                            cursor: "pointer",
+                            overflow: 'hidden',
+                            height: this.tabHeight - this.dropzoneHeightOffset + "px",
+                            padding: spacingUnit
                         } : styles;
 
                         return (
@@ -199,21 +225,13 @@ class SNETImageUpload extends React.Component {
 
                                         {isDragReject ?
                                             <Typography
-                                                style={{
-                                                    ...this.textStyle,
-                                                    fontSize: 16,
-                                                    color: snetGrey,
-                                                }}
+                                                style={this.dropzoneRejectStyle}
                                             >
                                                 File rejected!
                                             </Typography>
                                             :
                                             <Typography
-                                                style={{
-                                                    ...this.textStyle,
-                                                    fontSize: 16,
-                                                    color: snetGrey,
-                                                }}
+                                                style={this.dropzoneRejectStyle}
                                             >
                                                 Drag and drop image here or
                                                 <span style={{color: this.mainColor}}> click</span>
@@ -224,7 +242,10 @@ class SNETImageUpload extends React.Component {
                                         {isDragReject ?
                                             <Typography
                                                 style={{
-                                                    ...this.textStyle,
+                                                    // ...this.textStyle,
+                                                    fontFamily: snetFont,
+                                                    fontVariantCaps: "normal",
+                                                    textTransform: 'initial',
                                                     color: snetGrey,
                                                     fontSize: 14,
                                                     padding: spacingUnit,
@@ -237,7 +258,10 @@ class SNETImageUpload extends React.Component {
                                             :
                                             <Typography
                                                 style={{
-                                                    ...this.textStyle,
+                                                    // ...this.textStyle,
+                                                    fontFamily: snetFont,
+                                                    fontVariantCaps: "normal",
+                                                    textTransform: 'initial',
                                                     color: snetGrey,
                                                     fontSize: 14,
                                                     padding: spacingUnit,
@@ -342,7 +366,13 @@ class SNETImageUpload extends React.Component {
                             }}
                             variant="outlined"
                             type="text"
-                            label={<Typography style={{...this.textStyle, color: snetGrey}}>Image URL</Typography>}
+                            label={<Typography style={{
+                                // ...this.textStyle,
+                                fontFamily: snetFont,
+                                fontVariantCaps: "normal",
+                                textTransform: 'initial',
+                                color: snetGrey
+                            }}>Image URL</Typography>}
                             onChange={this.searchTextUpdate}
                             InputProps={{
                                 endAdornment: (
@@ -399,7 +429,7 @@ class SNETImageUpload extends React.Component {
                         <Grow
                             in={this.state.value === 2}
                             style={{transformOrigin: '0 0 0'}}
-                            {...(this.state.value === 2 ? {timeout: i * 500} : {})}
+                            timeout={i * 500}
                             key={i}
                         >
                             <GridListTile key={i}>
@@ -466,7 +496,11 @@ class SNETImageUpload extends React.Component {
         return (
             <Fade in={this.state.mainState === "uploaded"}>
                 <div style={{
-                    ...this.tabStyle,
+                    // ...this.tabStyle,
+                    position: 'relative',
+                    overflow: 'hidden',
+                    padding: spacingUnit,
+                    height: this.tabHeight + "px",
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-around',
@@ -493,7 +527,10 @@ class SNETImageUpload extends React.Component {
                             style={{}}
                             title={<Typography
                                 style={{
-                                    ...this.textStyle,
+                                    // ...this.textStyle,
+                                    fontFamily: snetFont,
+                                    fontVariantCaps: "normal",
+                                    textTransform: 'initial',
                                     color: snetBackgroundGrey
                                 }}> {this.state.filename} </Typography>}
                         />
@@ -586,7 +623,12 @@ class SNETImageUpload extends React.Component {
                                         opacity: 0.9,
                                         marginRight: spacingUnit,
                                     }}/>
-                                    <Typography style={{...this.textStyle, color: snetGrey}}>
+                                    <Typography style={{
+                                        // ...this.textStyle,
+                                        fontFamily: snetFont,
+                                        fontVariantCaps: "normal",
+                                        textTransform: 'initial',
+                                        color: snetGrey}}>
                                         {errorMessage}
                                     </Typography>
                                 </span>
@@ -627,7 +669,10 @@ class SNETImageUpload extends React.Component {
                                     noWrap
                                     variant="title"
                                     style={{
-                                        ...this.textStyle,
+                                        // ...this.textStyle,
+                                        fontFamily: snetFont,
+                                        fontVariantCaps: "normal",
+                                        textTransform: 'initial',
                                         color: "black",
                                         padding: spacingUnit / 2,
                                     }}
@@ -663,7 +708,11 @@ class SNETImageUpload extends React.Component {
                             <Grid item xs>
                                 {this.props.infoTip.length > 0 &&
                                 <Tooltip title={this.props.infoTip}>
-                                    <InfoIcon style={{...this.iconStyle, color:snetGrey}}/>
+                                    <InfoIcon style={{
+                                        fontSize: 24,
+                                        size: "large",
+                                        color:snetGrey
+                                    }}/>
                                 </Tooltip>
                                 }
                             </Grid>
@@ -673,7 +722,11 @@ class SNETImageUpload extends React.Component {
                                     <Tooltip title="Click to reset!">
                                         <IconButton style={{width: "20", height: "20"}}
                                                     onClick={this.handleImageReset}>
-                                            <RefreshIcon style={{...this.iconStyle, color: this.mainColor}}/>
+                                            <RefreshIcon style={{
+                                                fontSize: 24,
+                                                size: "large",
+                                                color: this.mainColor
+                                            }}/>
                                         </IconButton>
                                     </Tooltip>
                                 </Fade>

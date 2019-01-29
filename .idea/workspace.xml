@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="ec2826c0-a328-48f9-8c95-207adf1f5801" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ImageUploadComponent.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/ImageUploadComponent.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,22 +17,21 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ImageUploadComponent.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="281">
-              <caret line="556" column="43" selection-start-line="556" selection-start-column="43" selection-end-line="556" selection-end-column="43" />
+            <state relative-caret-position="345">
+              <caret line="46" column="14" selection-start-line="46" selection-start-column="14" selection-end-line="46" selection-end-column="14" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="e#144#170#0" expanded="true" />
-                <element signature="e#1623#1673#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/App.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="29" column="14" lean-forward="true" selection-start-line="29" selection-start-column="14" selection-end-line="29" selection-end-column="14" />
+            <state relative-caret-position="388">
+              <caret line="29" column="14" selection-start-line="29" selection-start-column="14" selection-end-line="29" selection-end-column="14" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
               </folding>
@@ -44,21 +45,17 @@
             <state split_layout="SPLIT">
               <first_editor relative-caret-position="300">
                 <caret line="150" selection-start-line="150" selection-end-line="150" />
-                <folding>
-                  <element signature="e#0#39#0" expanded="true" />
-                  <element signature="e#0#39#0" expanded="true" />
-                </folding>
               </first_editor>
               <second_editor />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/package.json">
           <provider selected="true" editor-type-id="text-editor">
             <state>
-              <caret column="1" lean-forward="true" selection-start-column="1" selection-end-column="1" />
+              <caret column="1" selection-start-column="1" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -67,13 +64,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>renderLoad</find>
-      <find>iconStyle</find>
-      <find>flexG</find>
-      <find>red</find>
-      <find>&quot;cyan&quot;</find>
-      <find>props.height</find>
-      <find>renderGalleryTab</find>
       <find>selectedImage: null</find>
       <find>minWidth</find>
       <find>this.props.width</find>
@@ -97,6 +87,13 @@
       <find>timeout</find>
       <find>time</find>
       <find>6000</find>
+      <find>...this.text</find>
+      <find>...this.textStyle</find>
+      <find>tabStyle</find>
+      <find>...this.tab</find>
+      <find>iconStyle</find>
+      <find>...this.iconStyle</find>
+      <find>...</find>
     </findStrings>
     <replaceStrings>
       <replace>selectedFile</replace>
@@ -125,9 +122,9 @@
         <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/src/index.js" />
         <option value="$PROJECT_DIR$/src/NamedEntityRecognition.js" />
-        <option value="$PROJECT_DIR$/src/ImageUploadComponent.js" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/src/App.js" />
+        <option value="$PROJECT_DIR$/src/ImageUploadComponent.js" />
       </list>
     </option>
   </component>
@@ -164,6 +161,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="javascript.nodejs.core.library.configured.version" value="8.10.0" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../glauter-dapp/snet-dapp" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -224,11 +222,12 @@
       <workItem from="1548604182899" duration="6151000" />
       <workItem from="1548774670291" duration="620000" />
       <workItem from="1548775753628" duration="13213000" />
+      <workItem from="1548795665232" duration="3622000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="196452000" />
+    <option name="totallyTimeSpent" value="200074000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -243,7 +242,7 @@
     <frame x="993" y="25" width="927" height="1055" extended-state="4" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49919486" visible="true" weight="0.2079646" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49919486" visible="true" weight="0.20464602" />
       <window_info id="Structure" order="1" sideWeight="0.50080514" side_tool="true" weight="0.2079646" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
@@ -257,7 +256,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.32937366" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
-      <window_info anchor="bottom" id="Terminal" order="10" visible="true" weight="0.32937366" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.32937366" />
       <window_info anchor="bottom" id="Python Console" order="11" weight="0.32937366" />
       <window_info anchor="bottom" id="Event Log" order="12" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -357,13 +356,7 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/NamedEntityRecognition.js" />
-    <entry file="file://$PROJECT_DIR$/node_modules/react/cjs/react.development.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="1155" selection-start-line="1155" selection-end-line="1155" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/react/cjs/react.development.js" />
     <entry file="file://$PROJECT_DIR$/src/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -378,21 +371,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="1" lean-forward="true" selection-start-column="1" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/ImageUploadComponent.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="281">
-          <caret line="556" column="43" selection-start-line="556" selection-start-column="43" selection-end-line="556" selection-end-column="43" />
+        <state relative-caret-position="345">
+          <caret line="46" column="14" selection-start-line="46" selection-start-column="14" selection-end-line="46" selection-end-column="14" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
             <element signature="e#144#170#0" expanded="true" />
-            <element signature="e#1623#1673#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/App.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="388">
+          <caret line="29" column="14" selection-start-line="29" selection-start-column="14" selection-end-line="29" selection-end-column="14" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -402,22 +397,15 @@
         <state split_layout="SPLIT">
           <first_editor relative-caret-position="300">
             <caret line="150" selection-start-line="150" selection-end-line="150" />
-            <folding>
-              <element signature="e#0#39#0" expanded="true" />
-              <element signature="e#0#39#0" expanded="true" />
-            </folding>
           </first_editor>
           <second_editor />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/App.js">
+    <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="29" column="14" lean-forward="true" selection-start-line="29" selection-start-column="14" selection-end-line="29" selection-end-column="14" />
-          <folding>
-            <element signature="e#0#39#0" expanded="true" />
-          </folding>
+        <state>
+          <caret column="1" selection-start-column="1" selection-end-column="1" />
         </state>
       </provider>
     </entry>
