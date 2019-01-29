@@ -1,64 +1,60 @@
-/*=========================================
-; Title:  Author Style Sample
-; Author: Darknite
-; Date:   7 Jan 2011
-;==========================================*/
+/*============================================
+Author: Ramon Duraes (ramon@singularitynet.io)
+==============================================*/
 
 import React from "react";
 import PropTypes from 'prop-types';
-// Themes
 import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
-// Structural
+
 import Grid from "@material-ui/core/Grid";
-// Buttons and clickable components
+
 import IconButton from "@material-ui/core/IconButton";
-// Icons
 import RefreshIcon from "@material-ui/icons/Refresh";
 import InfoIcon from "@material-ui/icons/Info";
 import ErrorIcon from "@material-ui/icons/Error"
-// Loading
+
 import CircularProgress from '@material-ui/core/CircularProgress';
-// Transitions
+
 import Fade from '@material-ui/core/Fade';
 import Grow from '@material-ui/core/Grow';
 import Slide from '@material-ui/core/Slide';
-// Colors
+
 import {grey, red, blue} from "@material-ui/core/colors";
-// Tabs:
+
 import SwipeableViews from 'react-swipeable-views';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+
 import {Tooltip} from "@material-ui/core";
 import Typography from '@material-ui/core/Typography';
-// Upload tab
+
 import Dropzone from 'react-dropzone';
-// Search tab
+
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
-// Gallery tab
+
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import GridListTileBar from "@material-ui/core/GridListTileBar"; // for image uploaded state
-// Error Snackbar
+
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-// Global variables
-
 
 // Color Palette
-// const mainColor = this.props.mainColor[500];
-
-const snetGrey = grey[500];
-// const snetGreen = green[500];
 const snetGreyError = grey[700];
+const snetGrey = grey[500];
+const dropzoneBackgroundGrey = grey[200];
+const snetBackgroundGrey = grey[100];
 const snetRed = red[500];
 const snetBackgroundRed = red[100];
-const snetBackgroundGrey = grey[100];
+// Definitions
 const errorMessage = "Incorrect URL or permission denied by server.";
 const spacingUnit = 8;
 const snetFont = "Roboto";
+const minimumWidth = "400px";
+const minimumTabHeight = 160;
 
 class SNETImageUpload extends React.Component {
 
@@ -66,6 +62,10 @@ class SNETImageUpload extends React.Component {
         super(props);
         // It is the same thing, only difference is Component where we do the binding.
         // Component is lower in the tree, and now button has the logic how to open the screen.
+
+        // Setting minimum tab height
+        this.tabHeight = Math.max(minimumTabHeight, this.props.tabHeight);
+        this.dropzoneHeightOffset = 20;
 
         this.state = {
             value: 0, // Current tab value
@@ -79,9 +79,8 @@ class SNETImageUpload extends React.Component {
         this.tabStyle = {
             position: 'relative',
             overflow: 'hidden',
-            paddingTop: spacingUnit * 4, // To accommodate AppBar
             padding: spacingUnit,
-            height: this.props.height,
+            height: this.tabHeight + "px",
         };
         this.textStyle = {
             fontFamily: snetFont,
@@ -152,12 +151,14 @@ class SNETImageUpload extends React.Component {
                         let styles = {
                             borderWidth: 2,
                             borderColor: this.mainColor,
-                            backgroundColor: grey[200],
+                            backgroundColor: dropzoneBackgroundGrey,
                             borderStyle: 'dashed',
                             borderRadius: 5,
                             flexGrow: 1,
                             cursor: "pointer",
-                            height: this.props.height + "px",
+                            overflow: 'hidden',
+                            height: this.tabHeight - this.dropzoneHeightOffset + "px",
+                            padding: spacingUnit
                         };
                         styles = isDragActive ? {
                             ...styles,
@@ -180,7 +181,7 @@ class SNETImageUpload extends React.Component {
                                       alignItems="center"
                                       style={{
                                           flexGrow: 1,
-                                          height: this.props.height + "px"
+                                          height: this.tabHeight + "px"
                                       }}
                                       spacing={spacingUnit}
                                 >
@@ -329,7 +330,7 @@ class SNETImageUpload extends React.Component {
                 alignItems="center"
                 style={{
                     flexGrow: 1,
-                    height: this.props.height + "px"
+                    height: this.tabHeight + "px"
                 }}
             >
                 <Grid item xs={12}>
@@ -391,7 +392,7 @@ class SNETImageUpload extends React.Component {
                     spacing={spacingUnit}
                     style={{
                         width: "100%",
-                        height: this.props.height + "px",
+                        height: this.tabHeight + "px",
                     }}
                 >
                     {this.props.imageGallery.map((url, i) => (
@@ -425,7 +426,7 @@ class SNETImageUpload extends React.Component {
                     alignItems="center"
                     style={{
                         flexGrow: 1,
-                        height: this.props.height + "px"
+                        height: this.tabHeight + "px"
                     }}
                 >
                     <Grid item xs={12}>
@@ -469,7 +470,6 @@ class SNETImageUpload extends React.Component {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-around',
-                    overflow: 'hidden',
                 }}
                      onMouseOver={() => this.setState({displayImageName: true})}
                      onMouseLeave={() => this.setState({displayImageName: false})}
@@ -481,10 +481,10 @@ class SNETImageUpload extends React.Component {
                         id="loadedImage"
                         // crossOrigin="anonymous"
                         style={this.props.displayProportionalImage ? {
-                            maxHeight: this.props.height,
+                            maxHeight: this.tabHeight + "px",
                             maxWidth: "100%",
                         } : {
-                            height: this.props.height,
+                            height: this.tabHeight + "px",
                             width: "100%",
                         }}
                     />
@@ -554,7 +554,7 @@ class SNETImageUpload extends React.Component {
                             width: "100%"
                         }}
                         open={this.state.displayError}
-                        autoHideDuration={6000}
+                        autoHideDuration={5000}
                         TransitionComponent={Slide}
                         transitionDuration={300}
                         onClose={() => this.setState({displayError: false})}
@@ -604,7 +604,7 @@ class SNETImageUpload extends React.Component {
                 style={{
                     width: this.props.width,
                     minHeight: "264px",
-                    minWidth: "400px",
+                    minWidth: minimumWidth,
                     position: "absolute"
                 }}
             >
@@ -696,13 +696,14 @@ class SNETImageUpload extends React.Component {
 
 SNETImageUpload.propTypes = {
     width: PropTypes.string, // e.g.: "500px", "50%" (of parent component width)
-    height: PropTypes.number.isRequired, // always in pixels. E.g.: "300px"
+    tabHeight: PropTypes.number.isRequired, // a number without units
     imageDataFunc: PropTypes.func.isRequired,
     imageName: PropTypes.string.isRequired,
     outputFormat: PropTypes.oneOf(["image/png", "image/jpg", "image/jpeg"]), //TODO: test
     allowedInputTypes: PropTypes.string, // TODO: specify which strings are allowed
     maxImageSize: PropTypes.number, // 10 mb
     displayProportionalImage: PropTypes.bool,
+    allowURL: PropTypes.bool,
     imageGallery: PropTypes.arrayOf(PropTypes.string), // TODO: check that items are URLs
     galleryCols: PropTypes.number,
     infoTip: PropTypes.string,
@@ -711,7 +712,7 @@ SNETImageUpload.propTypes = {
 
 SNETImageUpload.defaultProps = {
     width: "500px",
-    height: "300px",
+    tabHeight: 300,
     imageName: "Input Image",
     outputFormat: "image/jpg",
     allowedInputTypes: "image/*",
@@ -719,7 +720,7 @@ SNETImageUpload.defaultProps = {
     displayProportionalImage: true, // if true, keeps uploaded image proportions. Else stretches it
     allowURL: false, // sends image URL instead of image data for both URL and Gallery modes. Might still send base64 if the user uploads an image
     imageGallery: [],
-    galleryCols: 1,
+    galleryCols: 3,
     infoTip: "",
     mainColor: blue,
 };

@@ -29,14 +29,14 @@ class App extends Component {
 
     render() {
         return (
-            <div className="App" style={{height: "2000px", width:"80%", backgroundColor: "green", position: "relative"}}>
+            <div className="App" style={{height: "2000px", width:"80%", backgroundColor: "green", position: "absolute"}}>
                 <ImageUploadComponent
                     imageDataFunc={this.getData}
                     imageName="Input Image"
                     imageGallery={imageGallery}
                     galleryCols={3}
-                    height={180}
-                    width="90%"
+                    tabHeight={400}
+                    width="80%"
                     infoTip="Upload the image that will be processed by the service."
                 />
             </div>
