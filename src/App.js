@@ -34,6 +34,7 @@ class App extends Component {
                     imageDataFunc={this.getData}
                     imageName="Input Image"
                     imageGallery={imageGallery}
+                    returnByteArray = {false}
                     galleryCols={3}
                     tabHeight={400}
                     width="80%"

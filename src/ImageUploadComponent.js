@@ -121,21 +121,68 @@ class SNETImageUpload extends React.Component {
        - IMAGE UPLOAD -
     *  ----------------*/
 
+    // // public method for encoding an Uint8Array to base64
+    // static Uint8ArrayTobase64 (input) {
+    //     const keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+    //     let output = "";
+    //     let chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+    //     let i = 0;
+    //
+    //     while (i < input.length) {
+    //         chr1 = input[i++];
+    //         chr2 = i < input.length ? input[i++] : Number.NaN; // Not sure if the index
+    //         chr3 = i < input.length ? input[i++] : Number.NaN; // checks are needed here
+    //
+    //         enc1 = chr1 >> 2;
+    //         enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+    //         enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+    //         enc4 = chr3 & 63;
+    //
+    //         if (isNaN(chr2)) {
+    //             enc3 = enc4 = 64;
+    //         } else if (isNaN(chr3)) {
+    //             enc4 = 64;
+    //         }
+    //         output += keyStr.charAt(enc1) + keyStr.charAt(enc2) +
+    //             keyStr.charAt(enc3) + keyStr.charAt(enc4);
+    //     }
+    //     return output;
+    // }
+
     handleDropzoneUpload(files) {
         this.setLoadingState();
 
         const file = files[0];
         const reader = new FileReader();
-        reader.readAsDataURL(file);
 
-        reader.onloadend = () => {
-            this.setState({
-                mainState: "uploaded", // initial, loading, uploaded
-                searchText: null,
-                selectedImage: reader.result,
-                filename: file.name,
-            }, () => this.props.imageDataFunc(this.state.selectedImage));
-        };
+        if (this.props.returnByteArray) {
+            const byteReader = new FileReader();
+            byteReader.readAsArrayBuffer(file);
+            byteReader.onloadend = () => {
+                reader.readAsDataURL(file);
+                reader.onloadend = () => {
+                    this.setState({
+                        mainState: "uploaded", // initial, loading, uploaded
+                        searchText: null,
+                        selectedImage: reader.result,
+                        filename: file.name,
+                    }, this.props.imageDataFunc(new Uint8Array(byteReader.result)))
+                }
+            }
+        } else {
+            reader.readAsDataURL(file);
+            reader.onloadend = () => {
+                this.setState({
+                        mainState: "uploaded", // initial, loading, uploaded
+                        searchText: null,
+                        selectedImage: reader.result,
+                        filename: file.name,
+                    }, () => {
+                        this.props.imageDataFunc(this.state.selectedImage)
+                    }
+                );
+            }
+        }
     };
 
     renderUploadTab() {
@@ -282,20 +329,46 @@ class SNETImageUpload extends React.Component {
 
     toDataUrl = (src, callback, outputFormat) => {
         const filename = src.substring(src.lastIndexOf("/") + 1);
-
         const img = new Image();
+        const byteReader = new FileReader();
+        let dataURL;
+        byteReader.onloadend = () => {
+            this.setState({
+                selectedImage: dataURL,
+                mainState: "uploaded",
+                filename: filename,
+                searchText: null,
+            }, () => {
+                this.props.imageDataFunc(new Uint8Array(byteReader.result))
+            })
+        };
         img.crossOrigin = 'anonymous';
         img.onerror = this.handleError;
-        img.onload = function () {
-            const canvas = document.createElement("canvas"),
-                context = canvas.getContext('2d');
-            let dataURL;
-            canvas.height = this.naturalHeight;
-            canvas.width = this.naturalWidth;
-            context.drawImage(this, 0, 0);
-            dataURL = canvas.toDataURL(outputFormat);
-            callback(dataURL, filename);
-        };
+        if(this.props.returnByteArray){
+            img.onload =  function () {
+                const canvas = document.createElement("canvas"),
+                    context = canvas.getContext('2d');
+
+                canvas.height = this.naturalHeight;
+                canvas.width = this.naturalWidth;
+                context.drawImage(this, 0, 0);
+                dataURL = canvas.toDataURL(outputFormat);
+                canvas.toBlob((blob) => {
+                    byteReader.readAsArrayBuffer(blob);
+                })
+            };
+        } else {
+            img.onload =  function () {
+                const canvas = document.createElement("canvas"),
+                    context = canvas.getContext('2d');
+                let dataURL;
+                canvas.height = this.naturalHeight;
+                canvas.width = this.naturalWidth;
+                context.drawImage(this, 0, 0);
+                dataURL = canvas.toDataURL(outputFormat);
+                callback(dataURL, filename);
+            };
+        }
         img.src = src;
         if (img.complete || img.complete === undefined) {
             img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
@@ -527,7 +600,7 @@ class SNETImageUpload extends React.Component {
             mainState: "initial",
             selectedImage: null,
             filename: null,
-        },() => this.props.imageDataFunc(this.state.selectedImage));
+        }, () => this.props.imageDataFunc(this.state.selectedImage));
     };
 
     renderTabs() {
@@ -663,7 +736,7 @@ class SNETImageUpload extends React.Component {
                             <Grid item xs>
                                 {this.props.infoTip.length > 0 &&
                                 <Tooltip title={this.props.infoTip}>
-                                    <InfoIcon style={{...this.iconStyle, color:snetGrey}}/>
+                                    <InfoIcon style={{...this.iconStyle, color: snetGrey}}/>
                                 </Tooltip>
                                 }
                             </Grid>
@@ -699,6 +772,7 @@ SNETImageUpload.propTypes = {
     tabHeight: PropTypes.number.isRequired, // a number without units
     imageDataFunc: PropTypes.func.isRequired,
     imageName: PropTypes.string.isRequired,
+    returnByteArray: PropTypes.bool, // whether to return base64 or byteArray image data
     outputFormat: PropTypes.oneOf(["image/png", "image/jpg", "image/jpeg"]), //TODO: test
     allowedInputTypes: PropTypes.string, // TODO: specify which strings are allowed
     maxImageSize: PropTypes.number, // 10 mb
@@ -714,6 +788,7 @@ SNETImageUpload.defaultProps = {
     width: "500px",
     tabHeight: 300,
     imageName: "Input Image",
+    returnByteArray: false,
     outputFormat: "image/jpg",
     allowedInputTypes: "image/*",
     maxImageSize: 10000000, // 10 mb

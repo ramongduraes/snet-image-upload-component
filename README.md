@@ -26,11 +26,12 @@ If the user types an invalid image URL or if the chosen image server blocks the 
 | tabHeight | number (no units) | 300 | Component's tab height (does not include top bar) to be set as a number (e.g.: 300). Minimum: 160. |
 | **imageDataFunc** | function, required |  - | A function that receives the uploaded image. |
 | imageName | string | "Input Image" | Image name that will be displayed on top of the component. *An image name too long might break the design of the component at minimum width.*|
+| returnByteArray | bool | `false` | If `true` returns Uint8Array encoded image data to `imageDataFunc()` instead of base64. |
 | allowedInputTypes | string | "image/*" | A string describing allowed file types for "Upload" component (e.g.: "image/jpeg, image/png"). |
 | maxImageSize | number | 10000000 | Maximum image file size for Upload tab in bytes. Default: 10mb. |
-| displayProportionalImage | bool | true | Whether to keep uploaded image proportions when displaying it or to ajust to it to tab's height and width. |
+| displayProportionalImage | bool | `true` | Whether to keep uploaded image proportions when displaying it or to ajust to it to tab's height and width. |
 | imageGallery | list | - | Optional list of image URLs that will be rendered in a Gallery tab. This should be used if the service provider would like to suggest images for the user. If this argument is empty, the Gallery tab will not be rendered. |
-| allowURL | bool | false | Allows sending image URLs for "URL" and "Gallery" tabs. Mainly used to avoid CORS error. |
+| allowURL | bool | `false` | Allows sending image URLs for "URL" and "Gallery" tabs. Mainly used to avoid CORS error. |
 | galleryCols | number | 3 | Number of image columns to be displayed in gallery mode. |
 | infoTip | string | "" | An optional string to provide a tip or explanation for the service user. If not empty, will render an "Info" icon in the top bar that will display a tooltip when hovered upon. |
 | mainColor | object | blue | A material ui color object that will be the main color of the component.|
@@ -158,5 +159,4 @@ If the user hovers the mouse on the main tab, the name of the image will be disp
 
 ## Future Improvements
 
-- Allow user to choose between base64 and bytes encoding.
 - Set minimum width according to what components will be rendered in the top tab
