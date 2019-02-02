@@ -152,6 +152,7 @@ If the user hovers the mouse on the main tab, the name of the image will be disp
 
 ## Known Issues
 
+- Dropping an image on top of an already uploaded image triggers browser's default dropping behavior: loading the image file;
 - "maxImageSize" and "allowedInputTypes" parameters are only valid for "Upload" mode;
 - Output image format ("outputFormat") parameter does not work;
 - "Image name" parameter might break the design if its too long;
