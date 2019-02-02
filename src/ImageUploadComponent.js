@@ -321,7 +321,7 @@ export default class SNETImageUpload extends React.Component {
         }, () => this.props.imageDataFunc(this.state.selectedImage));
     };
 
-    toDataUrl = (src, callback, outputFormat) => {
+    toDataUrl(src, callback, outputFormat) {
         const filename = src.substring(src.lastIndexOf("/") + 1);
         const img = new Image();
         const byteReader = new FileReader();
