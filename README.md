@@ -27,7 +27,7 @@ If the user types an invalid image URL or if the chosen image server blocks the 
 | **imageDataFunc** | function, required |  - | A function that receives the uploaded image. |
 | imageName | string | "Input Image" | Image name that will be displayed on top of the component. *An image name too long might break the design of the component at minimum width.*|
 | returnByteArray | bool | `false` | If `true` returns Uint8Array encoded image data to `imageDataFunc()` instead of base64. |
-| allowedInputTypes | string | "image/*" | A string describing allowed file types for "Upload" component (e.g.: "image/jpeg, image/png"). |
+| allowedInputTypes | string or array | "image/*" | Specifies allowed file types for "Upload" component. Accepts a file type-string or an array of types (e.g.: "image/jpeg", \["image/jpg", "image/jpeg"]). |
 | maxImageSize | number | 10000000 | Maximum image file size for Upload tab in bytes. Default: 10mb. |
 | displayProportionalImage | bool | `true` | Whether to keep uploaded image proportions when displaying it or to ajust to it to tab's height and width. |
 | imageGallery | list | - | Optional list of image URLs that will be rendered in a Gallery tab. This should be used if the service provider would like to suggest images for the user. If this argument is empty, the Gallery tab will not be rendered. |

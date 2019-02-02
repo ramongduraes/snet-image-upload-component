@@ -37,6 +37,8 @@ class App extends Component {
                     returnByteArray = {false}
                     galleryCols={3}
                     tabHeight={400}
+                    maxImageSize={10000000}
+                    allowedInputTypes={["image/jpg", "image/jpeg"]}
                     width="80%"
                     infoTip="Upload the image that will be processed by the service."
                 />

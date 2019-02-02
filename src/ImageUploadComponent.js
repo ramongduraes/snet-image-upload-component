@@ -1,5 +1,8 @@
 /*============================================
-Author: Ramon Duraes (ramon@singularitynet.io)
+Author: Ramon Duraes
+Email: ramon@singularitynet.io
+Github: https://github.com/ramongduraes
+Date: 02 February 2019
 ==============================================*/
 
 import React from "react";
@@ -28,7 +31,7 @@ import Tab from '@material-ui/core/Tab';
 import {Tooltip} from "@material-ui/core";
 import Typography from '@material-ui/core/Typography';
 
-import Dropzone from 'react-dropzone';
+import FileDrop from 'react-file-drop';
 
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -50,13 +53,12 @@ const snetBackgroundGrey = grey[100];
 const snetRed = red[500];
 const snetBackgroundRed = red[100];
 // Definitions
-const errorMessage = "Incorrect URL or permission denied by server.";
 const spacingUnit = 8;
 const snetFont = "Roboto";
 const minimumWidth = "400px";
 const minimumTabHeight = 160;
 
-class SNETImageUpload extends React.Component {
+export default class SNETImageUpload extends React.Component {
 
     constructor(props) {
         super(props);
@@ -66,6 +68,7 @@ class SNETImageUpload extends React.Component {
         // Setting minimum tab height
         this.tabHeight = Math.max(minimumTabHeight, this.props.tabHeight);
         this.dropzoneHeightOffset = 20;
+        this.handleDropzoneUpload = this.handleDropzoneUpload.bind(this);
 
         this.state = {
             value: 0, // Current tab value
@@ -74,6 +77,7 @@ class SNETImageUpload extends React.Component {
             selectedImage: null,
             filename: null,
             displayError: false,
+            errorMessage: null,
             displayImageName: false,
         };
         this.tabStyle = {
@@ -106,6 +110,10 @@ class SNETImageUpload extends React.Component {
             typography: {useNextVariants: true},
         });
 
+        this.urlErrorMessage = "Incorrect URL or permission denied by server.";
+        this.fileSizeError = "File size exceeds limits (" + this.props.maxImageSize / 1000000 + "mb).";
+        this.fileTypeError = "File type not accepted. Allowed: " + this.props.allowedInputTypes + ".";
+
         // Function binding
         this.urlCallback = this.urlCallback.bind(this);
 
@@ -121,40 +129,54 @@ class SNETImageUpload extends React.Component {
        - IMAGE UPLOAD -
     *  ----------------*/
 
-    // // public method for encoding an Uint8Array to base64
-    // static Uint8ArrayTobase64 (input) {
-    //     const keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-    //     let output = "";
-    //     let chr1, chr2, chr3, enc1, enc2, enc3, enc4;
-    //     let i = 0;
-    //
-    //     while (i < input.length) {
-    //         chr1 = input[i++];
-    //         chr2 = i < input.length ? input[i++] : Number.NaN; // Not sure if the index
-    //         chr3 = i < input.length ? input[i++] : Number.NaN; // checks are needed here
-    //
-    //         enc1 = chr1 >> 2;
-    //         enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
-    //         enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
-    //         enc4 = chr3 & 63;
-    //
-    //         if (isNaN(chr2)) {
-    //             enc3 = enc4 = 64;
-    //         } else if (isNaN(chr3)) {
-    //             enc4 = 64;
-    //         }
-    //         output += keyStr.charAt(enc1) + keyStr.charAt(enc2) +
-    //             keyStr.charAt(enc3) + keyStr.charAt(enc4);
-    //     }
-    //     return output;
-    // }
+    handleImageUpload(files) {
+        this.setState({
+            mainState: "loading",
+        });
 
-    handleDropzoneUpload(files) {
-        this.setLoadingState();
-
+        // Checks file size
         const file = files[0];
-        const reader = new FileReader();
+        if (file.size > this.props.maxImageSize) {
+            this.setState({
+                mainState: "initial",
+                searchText: null,
+                selectedImage: null,
+                filename: null,
+                errorMessage: this.fileSizeError,
+                displayError: true,
+            });
+            return
+        }
 
+        // Checks file type
+        let filetype = file.type;
+        if (this.props.allowedInputTypes.includes("image/*")){ // if we accept all image types
+            if (filetype.indexOf("image") === -1) { // if received file is not an image
+                this.setState({
+                    mainState: "initial",
+                    searchText: null,
+                    selectedImage: null,
+                    filename: null,
+                    errorMessage: this.fileTypeError + "Got: " + filetype +".",
+                    displayError: true,
+                });
+                return
+            }
+        } else { // verify input type against each allowed input type
+            if(!this.props.allowedInputTypes.includes(filetype)){
+                this.setState({
+                    mainState: "initial",
+                    searchText: null,
+                    selectedImage: null,
+                    filename: null,
+                    errorMessage: this.fileTypeError + "Got: " + filetype +".",
+                    displayError: true,
+                });
+                return
+            }
+        }
+
+        const reader = new FileReader();
         if (this.props.returnByteArray) {
             const byteReader = new FileReader();
             byteReader.readAsArrayBuffer(file);
@@ -166,6 +188,8 @@ class SNETImageUpload extends React.Component {
                         searchText: null,
                         selectedImage: reader.result,
                         filename: file.name,
+                        displayError: false,
+                        errorMessage: null,
                     }, this.props.imageDataFunc(new Uint8Array(byteReader.result)))
                 }
             }
@@ -183,123 +207,87 @@ class SNETImageUpload extends React.Component {
                 );
             }
         }
+    }
+
+    handleDropzoneUpload(files, event) {
+        // To prevent default behavior (browser navigating to the dropped file)
+        event.preventDefault();
+        event.stopPropagation();
+        this.handleImageUpload(files);
     };
 
     renderUploadTab() {
+
+
+        let styles = {
+            borderWidth: 2,
+            borderColor: this.mainColor,
+            backgroundColor: dropzoneBackgroundGrey,
+            borderStyle: 'dashed',
+            borderRadius: 5,
+            flexGrow: 1,
+            cursor: "pointer",
+            overflow: 'hidden',
+            height: this.tabHeight - this.dropzoneHeightOffset + "px",
+            padding: spacingUnit
+        };
+
         return (
             <Grid item xs={12}>
-                <Dropzone
-                    accept={this.props.allowedInputTypes}
-                    onDropAccepted={this.handleDropzoneUpload.bind(this)}
-                    maxSize={this.props.maxImageSize}
-                >
-                    {({getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject}) => {
-
-                        let styles = {
-                            borderWidth: 2,
-                            borderColor: this.mainColor,
-                            backgroundColor: dropzoneBackgroundGrey,
-                            borderStyle: 'dashed',
-                            borderRadius: 5,
-                            flexGrow: 1,
-                            cursor: "pointer",
-                            overflow: 'hidden',
-                            height: this.tabHeight - this.dropzoneHeightOffset + "px",
-                            padding: spacingUnit
-                        };
-                        styles = isDragActive ? {
-                            ...styles,
-                            // borderWidth: 4,
-                            borderStyle: 'solid',
-                            borderColor: this.mainColor,
-                        } : styles;
-                        styles = isDragReject ? {
-                            ...styles,
-                            borderStyle: 'solid',
-                            borderColor: snetGrey,
-                        } : styles;
-
-                        return (
-                            <div {...getRootProps()} style={styles}>
-                                <input {...getInputProps()} />
-                                <Grid container
-                                      direction="column"
-                                      justify="center"
-                                      alignItems="center"
-                                      style={{
-                                          flexGrow: 1,
-                                          height: this.tabHeight + "px"
-                                      }}
-                                      spacing={spacingUnit}
-                                >
-                                    <Grid item>
-                                        <svg style={{
-                                            width: "48x",
-                                            height: "48px",
-                                        }}
-                                             viewBox="0 0 24 24">
-                                            <path fill={isDragReject ? snetGrey : this.mainColor}
-                                                  d="M14,13V17H10V13H7L12,8L17,13M19.35,10.03C18.67,6.59 15.64,4 12,4C9.11,4 6.6,5.64 5.35,8.03C2.34,8.36 0,10.9 0,14A6,6 0 0,0 6,20H19A5,5 0 0,0 24,15C24,12.36 21.95,10.22 19.35,10.03Z"/>
-                                        </svg>
-                                    </Grid>
-                                    <Grid item>
-
-                                        {isDragReject ?
-                                            <Typography
-                                                style={{
-                                                    ...this.textStyle,
-                                                    fontSize: 16,
-                                                    color: snetGrey,
-                                                }}
-                                            >
-                                                File rejected!
-                                            </Typography>
-                                            :
-                                            <Typography
-                                                style={{
-                                                    ...this.textStyle,
-                                                    fontSize: 16,
-                                                    color: snetGrey,
-                                                }}
-                                            >
-                                                Drag and drop image here or
-                                                <span style={{color: this.mainColor}}> click</span>
-                                            </Typography>
-                                        }
-                                    </Grid>
-                                    <Grid item>
-                                        {isDragReject ?
-                                            <Typography
-                                                style={{
-                                                    ...this.textStyle,
-                                                    color: snetGrey,
-                                                    fontSize: 14,
-                                                    padding: spacingUnit,
-                                                }}
-                                            >
-                                                File size must be smaller than {this.props.maxImageSize / 1000000}mb.
-                                                <br/>
-                                                File types accepted : {this.props.allowedInputTypes}.
-                                            </Typography>
-                                            :
-                                            <Typography
-                                                style={{
-                                                    ...this.textStyle,
-                                                    color: snetGrey,
-                                                    fontSize: 14,
-                                                    padding: spacingUnit,
-                                                }}
-                                            >
-                                                Image file must be smaller than {this.props.maxImageSize / 1000000}mb.
-                                                Source images are not saved on the servers after the job is processed.
-                                            </Typography>
-                                        }
-                                    </Grid>
+                <label htmlFor='myInput'>
+                    <FileDrop onDrop={(files, event) => this.handleDropzoneUpload(files, event)} >
+                        <input id="myInput" type="file" style={{display: 'none'}} accept={this.props.allowedInputTypes}
+                               onChange={(e) => this.handleImageUpload(e.target.files)}/>
+                        <div style={styles}>
+                            <Grid container
+                                  direction="column"
+                                  justify="center"
+                                  alignItems="center"
+                                  style={{
+                                      flexGrow: 1,
+                                      height: this.tabHeight + "px"
+                                  }}
+                                  spacing={spacingUnit}
+                            >
+                                <Grid item>
+                                    <svg style={{
+                                        width: "48x",
+                                        height: "48px",
+                                    }}
+                                         viewBox="0 0 24 24">
+                                        <path fill={this.mainColor}
+                                              d="M14,13V17H10V13H7L12,8L17,13M19.35,10.03C18.67,6.59 15.64,4 12,4C9.11,4 6.6,5.64 5.35,8.03C2.34,8.36 0,10.9 0,14A6,6 0 0,0 6,20H19A5,5 0 0,0 24,15C24,12.36 21.95,10.22 19.35,10.03Z"/>
+                                    </svg>
                                 </Grid>
-                            </div>
-                        )
-                    }}
-                </Dropzone>
+                                <Grid item>
+                                    <Typography
+                                        style={{
+                                            ...this.textStyle,
+                                            fontSize: 16,
+                                            color: snetGrey,
+                                        }}
+                                    >
+                                        Drag and drop image here or
+                                        <span style={{color: this.mainColor}}> click</span>
+                                    </Typography>
+                                </Grid>
+                                <Grid item>
+                                    <Typography
+                                        style={{
+                                            ...this.textStyle,
+                                            color: snetGrey,
+                                            fontSize: 14,
+                                            padding: spacingUnit,
+                                        }}
+                                    >
+                                        Image file must be smaller than {this.props.maxImageSize / 1000000}mb.
+                                        Source images are not saved on the servers after the job is processed.
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                        </div>
+                    </FileDrop>
+                </label>
             </Grid>
         );
     }
@@ -338,14 +326,23 @@ class SNETImageUpload extends React.Component {
                 mainState: "uploaded",
                 filename: filename,
                 searchText: null,
+                displayError: false,
+                errorMessage: null
             }, () => {
                 this.props.imageDataFunc(new Uint8Array(byteReader.result))
             })
         };
         img.crossOrigin = 'anonymous';
-        img.onerror = this.handleError;
-        if(this.props.returnByteArray){
-            img.onload =  function () {
+        img.onerror = () => this.setState({
+            mainState: "initial",
+            searchText: null,
+            selectedImage: null,
+            filename: null,
+            errorMessage: this.urlErrorMessage,
+            displayError: true,
+        });
+        if (this.props.returnByteArray) {
+            img.onload = function () {
                 const canvas = document.createElement("canvas"),
                     context = canvas.getContext('2d');
 
@@ -358,7 +355,7 @@ class SNETImageUpload extends React.Component {
                 })
             };
         } else {
-            img.onload =  function () {
+            img.onload = function () {
                 const canvas = document.createElement("canvas"),
                     context = canvas.getContext('2d');
                 let dataURL;
@@ -531,6 +528,7 @@ class SNETImageUpload extends React.Component {
             selectedImage: null,
             filename: null,
             displayError: false,
+            errorMessage: null,
             displayImageName: false,
         }, () => this.props.imageDataFunc(this.state.selectedImage));
     };
@@ -550,7 +548,14 @@ class SNETImageUpload extends React.Component {
                     <img
                         alt="Service input"
                         src={this.state.selectedImage}
-                        onError={this.handleError}
+                        onError={() => this.setState({
+                            mainState: "initial",
+                            searchText: null,
+                            selectedImage: null,
+                            filename: null,
+                            errorMessage: this.urlErrorMessage,
+                            displayError: true,
+                        })}
                         id="loadedImage"
                         // crossOrigin="anonymous"
                         style={this.props.displayProportionalImage ? {
@@ -574,20 +579,6 @@ class SNETImageUpload extends React.Component {
                 </div>
             </Fade>
         );
-    };
-
-    /* ---------------
-       - ERROR STATE -
-    *  ---------------*/
-    handleError = () => {
-        this.setState({
-            mainState: "initial",
-            value: 1,
-            searchText: null,
-            selectedImage: null,
-            filename: null,
-            displayError: true,
-        });
     };
 
     /* -----------------
@@ -660,7 +651,7 @@ class SNETImageUpload extends React.Component {
                                         marginRight: spacingUnit,
                                     }}/>
                                     <Typography style={{...this.textStyle, color: snetGrey}}>
-                                        {errorMessage}
+                                        {this.state.errorMessage}
                                     </Typography>
                                 </span>
                             }
@@ -774,7 +765,7 @@ SNETImageUpload.propTypes = {
     imageName: PropTypes.string.isRequired,
     returnByteArray: PropTypes.bool, // whether to return base64 or byteArray image data
     outputFormat: PropTypes.oneOf(["image/png", "image/jpg", "image/jpeg"]), //TODO: test
-    allowedInputTypes: PropTypes.string, // TODO: specify which strings are allowed
+    allowedInputTypes: PropTypes.oneOfType([PropTypes.string, PropTypes.array]), // TODO: specify which strings are allowed
     maxImageSize: PropTypes.number, // 10 mb
     displayProportionalImage: PropTypes.bool,
     allowURL: PropTypes.bool,
@@ -789,7 +780,7 @@ SNETImageUpload.defaultProps = {
     tabHeight: 300,
     imageName: "Input Image",
     returnByteArray: false,
-    outputFormat: "image/jpg",
+    outputFormat: "image/png",
     allowedInputTypes: "image/*",
     maxImageSize: 10000000, // 10 mb
     displayProportionalImage: true, // if true, keeps uploaded image proportions. Else stretches it
@@ -799,7 +790,3 @@ SNETImageUpload.defaultProps = {
     infoTip: "",
     mainColor: blue,
 };
-
-export default (SNETImageUpload);
-// TODO: check that image is being converted to user chosen output extension
-// TODO: limit max file size for gallery and search as well
