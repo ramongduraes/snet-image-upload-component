@@ -379,7 +379,7 @@ export default class SNETImageUpload extends React.Component {
         }
     };
 
-    searchTextUpdate = event => {
+    searchTextUpdate(event){
         this.setState({
             searchText: event.target.value,
         });
@@ -427,7 +427,7 @@ export default class SNETImageUpload extends React.Component {
                                 }}>
                                     Image URL
                                 </Typography>}
-                            onChange={this.searchTextUpdate}
+                            onChange={this.searchTextUpdate.bind(this)}
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="end">
