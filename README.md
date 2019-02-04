@@ -14,18 +14,24 @@ This component is composed of a tool bar (at the top) and a main tab below it. T
 - An optional info tip that will be rendered if the "infoTip" parameter is not empty. It is an "Info" icon that displays a tooltip with the specified string when hovered upon.
 - A reset button that is rendered after the user uploads an image that allows them to choose another image.
 
-After the user chooses an image file or its URL, a loading state will be displayed as a "CircularProgress" component in the center of the main tab while the base64 encoding of the image is being downloaded or generated.
+The service provider may choose any combination of the three main tabs (Upload, Url and Gallery) to be displayed by combining the parameters `disableUploadTab`, `disableUrlTab` and `imageGallery`. 
 
-Once that is complete, the chosen image will be displayed on the main tab and the parent component will be provided its base64 encoded version via the provided function ("imageDataFunc") parameter.
+After the user chooses an image file or its URL, a loading state will be displayed as a "CircularProgress" component in the center of the main tab while the image data is being downloaded or generated.
+
+Once that is complete, the chosen image will be displayed on the main tab and the parent component will be provided its `base64` or `Uint8Array` encoded version via the provided function (`imageDataFunc`) parameter.
 
 If the user types an invalid image URL or if the chosen image server blocks the request due to CORS policy, and error message is displayed at the bottom of the component. It can be dismissed by simply clicking away or waiting 5 seconds.
+
+## Parameters
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
 | width | string | "400px" | Component width to be set in number of pixels or percentage width of parent div (e.g.: "500px", "60%"). Minimum: "400px". |
 | tabHeight | number (no units) | 300 | Component's tab height (does not include top bar) to be set as a number (e.g.: 300). Minimum: 160. |
 | **imageDataFunc** | function, required |  - | A function that receives the uploaded image. |
-| imageName | string | "Input Image" | Image name that will be displayed on top of the component. *An image name too long might break the design of the component at minimum width.*|
+| imageName | string | "Input Image" | Image name that will be displayed on top of the component.|
+| disableUploadTab | bool | false | If `true`, does not render *Upload* tab. |
+| disableUrlTab | bool | false | If `true`, does not render *Url* tab. |
 | returnByteArray | bool | `false` | If `true` returns Uint8Array encoded image data to `imageDataFunc()` instead of base64. |
 | allowedInputTypes | string or array | "image/*" | Specifies allowed file types for "Upload" component. Accepts a file type-string or an array of types (e.g.: "image/jpeg", \["image/jpg", "image/jpeg"]). |
 | maxImageSize | number | 10000000 | Maximum image file size for Upload tab in bytes. Default: 10mb. |
